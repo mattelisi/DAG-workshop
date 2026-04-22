@@ -1,0 +1,1379 @@
+---
+title: "Causal reasoning with DAGs"
+subtitle: "<br>_CBCD Causal Inference Workshop, 28th April 2026_"
+author: "Matteo Lisi"
+format:
+  revealjs:
+    logo: img/logo-small-london-cmyk.jpg
+    footer: "CBCD Causal Inference Workshop"
+    incremental: true  
+    auto-stretch: true
+    code-fold: false   # don’t fold
+    code-line-numbers: false
+    theme: [default, matteo_rhul.css]
+editor: source
+keep-md: true
+filters: [bg_style.lua]
+---
+
+
+
+
+## Outline
+
+
+
+::: {.cell}
+
+:::
+
+
+
+::: nonincremental
+1.  DAGs (Directed Acyclic Graphs)
+
+2.  Testable implications of DAGs
+
+3.  Estimating causal effects
+
+4.  Final thoughts & 'build your DAG' exercise
+:::
+
+# Causality and DAGs
+
+## *Correlation does not imply causation!*
+
+
+
+::: {.cell .fig-cap-location-margin layout-align="center"}
+::: {.cell-output-display}
+![Civil engineering doctorates awarded (in the US; source NSF)	as a function of the per capita consumption of mozzarella cheese, measured from 2000 to 2009.](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-2-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+
+## Causality
+
+::: nonincremental
+-   Taboo against explicit causal language in observational studies.
+-   However, most research questions are 'causal'.
+-   Papers tend include vague or implicit hints at causality, with disclaimers.
+-   Readers (especially non-specialists) often misled into causal conclusions when these are not warranted.
+-   **There is need for a principled framework for thinking clearly about causality.**
+:::
+
+<!-- ## Causality in neroscience -->
+
+<!-- **Characterising the role of neurons for behavior is a causal inference question.** -->
+
+<!-- ![Jones & Kording (2019)](img/causal_neuro_mediation.png){.nostretch fig-align="center" width="70%"} -->
+
+<!-- -   Neural activity in LIP area was widely believed to causally mediate evidence accumulation in perceptual decision, until it was found it's pharmacological inactivation had no effect on behavioural performance ([Katz et al, Nature 2016](https://doi.org/10.1038/nature18617)) -->
+
+<!-- ## Causal inference in human perception -->
+
+<!-- **Our sensory system routinely make inferences about causes of the sensory signals it receives.** -->
+
+<!-- ![Dekker & Lisi (2020)](img/gr1_lrg.jpg){.nostretch fig-align="center" width="60%"} -->
+
+## What is "causality"?
+
+ 
+
+:::: fragment
+*Everyone knows what causality is*
+
+::: {style="font-size: 80%;"}
+ 
+
+mozzarella cheese *does not* cause engineering PhDs;
+
+ 
+
+if we [intervene]{.underline} to increase consumption of mozzarella we would not expect this to have much influence on the number of PhDs awarded.
+:::
+::::
+
+<!-- ::: fragment -->
+<!--   -->
+
+<!-- Hume (1748): *“We may define a cause to be an object, followed by another, \[...\] where, if the first object had not been, the second had never existed.”* -->
+
+<!-- ::: -->
+
+<!-- :::: fragment -->
+
+<!--   -->
+
+<!-- Much of 20-th century developments in statistics mostly avoided causality -->
+
+<!-- ::: notes -->
+<!-- One exception, Ronald Fisher's formalization of randomized controlled experiments -->
+<!-- ::: -->
+
+<!--   -->
+<!-- :::: -->
+
+<!-- ::: fragment -->
+<!-- The word "cause" is not in the vocabulary of probability theory -->
+<!-- ::: -->
+
+<!--   -->
+
+::: fragment
+#### *Key questions*
+
+-   How can we assess causality (especially when [interventions]{.underline} are not possible)?
+-   What pattern of data and/or assumptions is required to convince people that a connection is *causal*?
+:::
+
+## *Common cause principle*
+
+::: nonincremental
+There is no causation without correlation (Reichenbach, 1956)
+
+ 
+
+> If $X$ and $Y$ are statistically dependent ($X \not\!\perp\!\!\!\perp  Y$)[^1],\
+> then either:
+>
+> 1.  $X$ causes $Y$;
+> 2.  $Y$ causes $X$;
+> 3.  a third variable $Z$ causes *both* $X$ and $Y$
+
+<!-- (in which case $X \perp\!\!\!\perp  Y \mid Z$). -->
+:::
+
+[^1]: The symbol $\not\!\perp\!\!\!\perp$ means *"not independent of"*. Conversely $A \!\perp\!\!\!\perp  B$ means "$A$ and $B$ are independent".
+
+## *Common cause principle*
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-3-1.png){fig-align='center' width=576}
+:::
+:::
+
+
+
+## Directed Acyclic Graphs (DAGs)
+
+ 
+
+::::: columns
+::: {.column width="50%"}
+
+:::: nonincremental
+
+-   A collection of **nodes** and **edges**
+
+-   Edges are *directed* arrows and indicates causal links.
+
+-   A **path** is the set of nodes connecting any two nodes.
+
+::::
+
+-   The node that a directed edge starts from is called the *parent* of the node that the edge goes into (*child* node).
+
+-   More than 1 node separation: *ancestor* and *descendant* nodes.
+
+-   *Exogenous variables* $\{ X \}$ external variables not caused by the model.
+
+-   *Endogenous variables* $\{ Y, W, Z\}$ variables determined by other variables in the model.
+
+<!-- -   _Graphical_ definition of causality: if  -->
+:::
+
+::: {.column width="50%"}
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-4-1.png){fig-align='center' width=240}
+:::
+:::
+
+
+:::
+:::::
+
+## Graphical definitions of causality
+
+::::: columns
+::: {.column width="50%"}
+-   A parent variable is a **direct cause** of it's child variables\
+    ($X$ is a direct cause of $Y$).
+
+-   An ancestor variable is an **indirect or potential cause** of its descendants\
+    ($X$ is a potential cause of $Z$).
+:::
+
+::: {.column width="50%"}
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-5-1.png){fig-align='center' width=240}
+:::
+:::
+
+
+:::
+:::::
+
+## Acyclicity in DAGs {.nostretch}
+
+::: nonincremental
+-   Acyclicity may seem problematic in presence of **feedback loops**.
+
+-   One way to deal with these is by adding nodes for repeated measures (e.g. crossed-lagged panel models)
+:::
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-6-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+
+## "Structural" errors
+
+:::::: columns
+:::: {.column width="35%"}
+ 
+
+Each variable in a DAG is usually assumed to be observed with some "error" ($\epsilon_W, \epsilon_X, \ldots$).
+
+ 
+
+These errors are assumed to be *independent* from each other, and are usually not shown for simplicity
+
+ 
+
+::: fragment
+*"The disturbance terms represent independent background factors that the investigator chooses not to include in the analysis"* (Pearl, 2009)
+:::
+::::
+
+::: {.column width="65%"}
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-7-1.png){fig-align='center' width=451.2}
+:::
+:::
+
+
+:::
+::::::
+
+## Product decomposition in DAGs
+
+::::::::: columns
+::::::: {.column width="50%"}
+::: fragment}
+We can write the **joint distribution** of all variables in a DAG as the product of the conditional distributions $p(\text{child} \mid \text{parents})$
+:::
+
+ 
+
+::: fragment
+\begin{align*}p & (X, Y,W,Z) =\\ & p(Z∣W,Y) \, p(Y∣X,W) \, p(W∣X) \, p(X) \end{align*}
+:::
+
+::: fragment
+This holds regardless of the precise functional form of each "arrows".
+:::
+
+ 
+
+::: {.fragment .fade-up}
+[**A DAG provides a *blueprint* defining a family of joint probability distributions over a set of variables.**]{style="color:red;"}
+:::
+:::::::
+
+::: {.column width="50%"}
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-8-1.png){fig-align='center' width=240}
+:::
+:::
+
+
+:::
+:::::::::
+
+# Testable implications of DAGs
+
+## Conditiona/unconditional independencies
+
+The structure of a DAG introduce constraints in the possible joint distribution of its variable that can be tested empirically.
+
+-   **Unconditional (in)dependencies**: a DAG is a statement about which variables should (or should not) be associated with one another;
+
+-   **Conditional (in)dependencies** a DAG states also which variables should become associated or non-associated when we *condition* on some other set of variables.
+
+## What does *"conditioning on a variable"* means?
+
+::::::::::: {style="font-size: 80%;"}
+::: fragment
+*Conditioning* on a variable here can be understood as *controlling for* it.
+:::
+
+ 
+
+::: fragment
+Conditioning on $Z$ when studying the link between $X$ and $Y$ means we introduce information about $Z$ in our analysis and ask if $X$ provide any additional information (above and beyond what we already have knowing $Z$).
+:::
+
+:::::: fragment
+::::: columns
+::: {.column width="50%"}
+ 
+
+$$Y \perp\!\!\!\perp  X \mid Z$$
+:::
+
+::: {.column width="50%"}
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-9-1.png){fig-align='center' width=288}
+:::
+:::
+
+
+:::
+:::::
+::::::
+
+::: fragment
+ 
+
+How to condition on / control for a variable in practice?
+
+-   **Stratified analysis**
+
+-   **Inclusion as covariate in regression models**
+
+-   **Matching**
+:::
+
+::: fragment
+All methods of statistical control are affected by measurement errors in confounding variables.
+:::
+:::::::::::
+
+## Confounding {.nostretch}
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-10-1.png){fig-align='center' width=576}
+:::
+:::
+
+
+
+## Confounding {.nostretch}
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-11-1.png){fig-align='center' width=576}
+:::
+:::
+
+
+
+## Colliders {.nostretch}
+
+ 
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-12-1.png){fig-align='center' width=288}
+:::
+:::
+
+
+
+-   $X$ and $Y$ are independent of each other $X \perp\!\!\!\perp  Y$
+
+-   $C$ is caused by both $X$ and $Y$
+
+-   They become dependent after we condition on the collider node $C$;\
+    ($A \not\!\perp\!\!\!\perp  B \mid C$)
+
+## Cake competition example {.nostretch}
+
+::::::::: columns
+::::::: {.column width="65%"}
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-13-1.png){fig-align='center' width=384}
+:::
+:::
+
+
+
+:::::::
+
+::::::: {.column width="35%"}
+
+::: {.fragment fragment-index=1}
+
+:::: {style="font-size: 70%;"}
+
+-   No association between `appearance` and `taste` in the 'population' of cakes
+
+ 
+
+-   `appearance` and `taste` becomes negatively correlated once we condition our analysis on whether a cake was shortlisted or not.
+
+::::
+
+:::
+
+:::::::
+
+::::::::: 
+
+
+::: {.fragment fragment-index=1}
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-14-1.png){fig-align='center' width=768}
+:::
+:::
+
+
+:::
+
+<!-- ::: fragment -->
+
+<!-- :::: {style="font-size: 70%;"} -->
+
+<!-- -   No association between `appearance` and `taste` in the 'population' of cakes -->
+
+<!-- -   `appearance` and `taste` becomes negatively correlated once we condition our analysis on whether a cake was shortlisted or not. -->
+
+<!-- :::: -->
+
+<!-- ::: -->
+
+## Conditional independencies in complex DAGS (D-separation) {.nostretch}
+
+-   Realistic causal models are more complex and have more than 1 path between variables.
+
+-   D-separation ("D" stands for *directional*) is when some variables on a directed graphs are independent of others
+
+-   Assuming we are not conditioning on any variable, **two variables in a DAG are D-separated if all the paths between them contain a collider.**
+
+-   Paths that do not contains colliders implies a correlation (dependency) between variables.
+
+-   Some examples are "fork" paths $X \leftarrow Z \rightarrow Y$ or a "pipe" paths $X \rightarrow Z \rightarrow Y$. **These paths are said to be "open" and in order to "close" them (so as to D-separate** $X$ and $Y$ and make them independent) we need to condition on $Z$.
+
+##  {.nostretch}
+
+### D-separation: example
+
+   
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-15-1.png){fig-align='center' width=576}
+:::
+:::
+
+
+
+::: fragment
+$Z$ and $Y$ are D-separated (unconditionally independent, $Z \perp\!\!\!\perp  Y$)
+:::
+
+##  {.nostretch}
+
+### D-separation: example
+
+   
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-16-1.png){fig-align='center' width=576}
+:::
+:::
+
+
+
+However, $W$ is a collider node, so if we condition our analysis on $W$ we would find a 'spurious' association between $Z$ and $Y$
+
+ 
+
+<!-- (formally: $Z \not\!\perp\!\!\!\perp  Y \mid W$) -->
+
+::: fragment
+*This association is 'spurious' because* $Y$ is not a descendant of $Z$.\
+If we were to make an intervention on $Z$ this would have no effect on $Y$.
+:::
+
+##  {.nostretch}
+
+### D-separation: example
+
+   
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-17-1.png){fig-align='center' width=576}
+:::
+:::
+
+
+
+**Conditioning on** $U$, the child of the collider node produces the same effect!
+
+ 
+
+(formally $Z \not\!\perp\!\!\!\perp  Y \mid U$)
+
+##  {.nostretch}
+
+### D-separation: example 2
+
+ 
+
+*Which variables that are D-separated (unconditionally independent) in this DAG?*
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-18-1.png){fig-align='center' width=576}
+:::
+:::
+
+
+
+::: fragment
+Only $Z_1$ and $Z_2$ are unconditionally independent ( $Z_1 \perp\!\!\!\perp  Z_2$).
+:::
+
+##  {.nostretch}
+
+### D-separation: example 2
+
+ 
+
+*Conditional on which variables are* $Z_1$ and $W$ independent one another?
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-19-1.png){fig-align='center' width=576}
+:::
+:::
+
+
+
+::: fragment
+Conditioning on $X$ makes $Z_1$ and $W$ independent one another ($W \perp\!\!\!\perp  Z_1 \mid X$); all other paths are "blocked" by a collider.
+:::
+
+## Automatic analysis of DAGs with [`dagitty`](https://www.dagitty.net/)
+
+![](img/dagitty_screenshot.png)
+
+## Automatic analysis of DAGs with [`dagitty`](https://www.dagitty.net/)
+
+`dagitty` is also available as an R package
+
+
+
+::: {.cell}
+
+```{.r .cell-code}
+library(dagitty)
+
+dag <- dagify(
+  W ~ X,
+  Y ~ W + Z3 + Z2,
+  X ~ Z1 + Z3,
+  Z3 ~ Z1 + Z2
+)
+
+impliedConditionalIndependencies(dag)
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+W _||_ Z1 | X
+W _||_ Z2 | Z1, Z3
+W _||_ Z2 | X
+W _||_ Z3 | X
+X _||_ Y | W, Z2, Z3
+X _||_ Y | W, Z1, Z3
+X _||_ Z2 | Z1, Z3
+Y _||_ Z1 | X, Z2, Z3
+Y _||_ Z1 | W, Z2, Z3
+Z1 _||_ Z2
+```
+
+
+:::
+:::
+
+
+
+## Causal model testing
+
+ 
+
+**We can use D-separation to falsify and test our DAG model!**
+
+-   We have found that $W \perp\!\!\!\perp  Z_1 \mid X$\
+    ($W$ is independent of $Z_1$ conditional on $X$)
+
+-   This implies that if we regress $W$ on $X$ and $Z_1$, e.g. $$W = \beta_1 X + \beta_2 Z_1$$\
+    we should find that $\beta_2 \approx 0$.
+
+-   Finding that $\beta_2\ne 0$ would indicate that $W$ depends on $Z_1$ given $X$, implying that the DAG model is wrong.
+
+-   More specifically, the DAG would be wrong because the 'true' model must have a path between $W$ and $Z_1$ that is not D-separated by $X$
+
+##  {.nostretch}
+
+### D-separation: example 1 again
+
+   
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-21-1.png){fig-align='center' width=576}
+:::
+:::
+
+
+
+What happens if we condition on *both* $W$ and $X$?
+
+::: fragment
+ 
+
+Conditioning on $\{ W,X \}$ makes $Z$ and $Y$ conditionally independent.
+
+ 
+
+$Z \perp\!\!\!\perp  Y \mid \{ W,X \}$
+:::
+
+##  {.nostretch}
+
+### D-separation: example 1 again
+
+ 
+
+As complexity increases the answer is less and less intuitive.\
+Luckily these questions can be addressed by mechanically applying logical rules, which have been automated in software like `dagitty`
+
+:::::::: columns
+::::: {.column width="55%"}
+::: {.fragment fragment-index="1"}
+
+
+::: {.cell}
+
+```{.r .cell-code}
+dag <- dagify(W ~ Z,
+              U ~ W,
+              W ~ X,
+              Y ~ X)
+
+# use dagitty to ask if Z and Y are 
+# D-separated conditional on {W, X}
+dseparated(dag, "Z", "Y", list("W", "X"))
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+[1] TRUE
+```
+
+
+:::
+:::
+
+
+:::
+
+ 
+
+::: {.fragment fragment-index="2"}
+
+
+::: {.cell}
+
+```{.r .cell-code}
+# what if we condition on {W, X, U}
+dseparated(dag, "Z", "Y", list("W", "X","U"))
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+[1] TRUE
+```
+
+
+:::
+:::
+
+
+:::
+:::::
+
+:::: {.column width="45%"}
+     
+
+::: {.fragment fragment-index="2"}
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-24-1.png){fig-align='center' width=576}
+:::
+:::
+
+
+:::
+::::
+::::::::
+
+## Testable implications of DAGS: summary
+
+-   DAGs have implications about the type of conditional and unconditional independencies that should be observed between the variables.
+
+-   We can use the D-separation criterion to falsify and test a graphical causal model.
+
+-   This type of *local* test that is different from common practice (e.g. SEM) of estimating parameters for the whole model and interpreting some goodness of fit indices (e.g. RMSEA, etc.).
+
+## Testable implications of DAGS: summary
+
+::: nonincremental
+-   DAGs have implications about the type of conditional and unconditional independencies that should be observed between the variables.
+
+-   We can use the D-separation criterion to falsify and test a graphical causal model.
+
+-   This type of *local* test that is different from common practice (e.g. SEM) of estimating parameters for the whole model and interpreting some goodness of fit indices (e.g. RMSEA, etc.).
+:::
+
+   
+
+#### Causal model search
+
+::: {style="font-size: 80%;"}
+By testing constraints systematically one can attempt to recover the causal structure from data[^2]. This requires a fairly large amount of data (many tests, each subject to sampling error).\
+When we have latent variables the output is not a unique DAG, but a a set of graphs with equivalent implications (*equivalence class*).
+:::
+
+[^2]: Inductive Causation (IC) algorithm (Velma & Pearl 1990, 1993); e.g. see [`bnlearn`](https://cran.r-project.org/web/packages/bnlearn/index.html) package in R.
+
+# Estimating causal effects
+
+## Estimating causal effects
+
+-   [Example:]{.underline} aim to assess the causal effect of a program aimed at improving emotion regulation in pre-schoolers:
+
+    -   participation in the intervention as a binary *"treatment"* $X \in \{0,1\}$.
+    -   choose an outcome measure $Y$ (e.g. emotion regulation checklist).
+
+ 
+
+-   We define, in principle, two *potential outcomes* for each child: the outcome if they receive the intervention ($Y_i^{X=1}$) and the outcome if they do not ($Y_i^{X=0}$). The causal effect for that child is their difference: $$\text{causal effect for }i^{\text{th}}\text{ child} = Y_i^{X=1} - Y_i^{X=0}$$.
+
+## The fundamental problem of causal inference
+
+-   We can only ever observe one outcome --- either the child received the treatment or not.\
+    The other (*counterfactual*) outcome remain fundamentally *unobservable*.
+
+-   The problem is *fundamental* in the sense that it can never be solved empirically alone; we always need **assumptions**.
+
+-   A DAG can encode these assumptions and provides a sketch of the data-generating process.
+
+-   We can use the DAG for:
+
+    -   determine whether a causal effect is identifiable from observational data
+    -   identify which covariates need to be controlled for
+    -   simulate counterfactual outcomes (combined with *structural* equations)
+
+## Determining if a causal effect is identifiable {.nostretch}
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-25-1.png){fig-align='center' width=288}
+:::
+:::
+
+
+
+::: fragment
+-   [Ideal scenario]{.underline}: there are no confounding variables that simultaneously influence the treatment $X$ and the outcome $Y$.
+
+-   We can consistently measure the causal effect $X \rightarrow Y$ from $X$ and $Y$ alone.
+
+-   Measuring and adjusting for $Z$ is not necessary for *unbiasedness* but can improve efficiency (reduce the uncertainty around our estimate of the causal effect)
+:::
+
+::: {style="font-size: 60%;"}
+ 
+
+$X \in \{0,1\}$ is the treatment (participation in the program); $Y$ is the outcome (emotion regulation checklist); $Z$ represents other variables (e.g. SES, parental stress) that may influence emotion regulation.
+:::
+
+##  {.nostretch}
+
+### What is your *estimand*?
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-26-1.png){fig-align='center' width=288}
+:::
+:::
+
+
+
+::::: {style="font-size: 80%;"}
+-   The **estimand** is the target causal quantity, not just a regression coefficient. (e.g. the average causal effect in a population).
+
+-   Lundberg et al (2021) distinguish
+
+    -   [theoretical estimand]{.underline}, composed by a *unit-level causal effect* (e.g. the child-specific difference in potential outcomes), and a *target population* (e.g. preschoolers in England);
+    -   [empirical estimand:]{.underline}, defined in terms of observable quantities (e.g. mean difference between groups).
+
+-   **DAGs show the assumptions needed to connect the theoretical to the empirical.**.
+
+ 
+
+::: fragment
+In the example, computing the difference in means between treatment and control groups gives a *sample average treatment effect* (SATE).
+:::
+
+ 
+
+::: fragment
+To generalize to the population (population ATE), we may need extra steps (e.g. post-stratification if distribution of covariates $Z$ in the sample differs from population).
+
+<!-- The distribution of covariates $Z$ may be different in the _target population_, in which case we may need some additional steps (e.g. post-stratification) to obtain a true _population average treatment effect_ (PATE or simply ATE) $$\text{ATE} = \mathbb{E}\left[Y^{X=1} -Y^{X=0}\right]$$ -->
+:::
+:::::
+
+## Causal effects & confounding
+
+ 
+
+:::::: columns
+::: {.column width="50%"}
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-27-1.png){fig-align='center' width=288}
+:::
+:::
+
+
+:::
+
+:::: {.column width="50%"}
+::: {style="font-size: 60%;"}
+ 
+
+$X \in \{0,1\}$ is the treatment (participation in the program);\
+$Y$ is the outcome (emotion regulation checklist);\
+$Z$ represents other variables (e.g. SES, parental stress) that may influence both emotion regulation as well as participation in the program.
+:::
+::::
+::::::
+
+-   Confounding occurs when there are "spurious" paths transmitting *non-causal* associations, between $X$ and $Y$.
+
+-   Non-causal paths connect $X$ to $Y$ but have an arrow that enters $X$. They are *non-causal* because changing $X$ will not cause a change in $Y$ (at least not through this path).
+
+ 
+
+::: fragment
+*How can we estimate the causal effect in presence of confounding?*
+:::
+
+## Dealing with confounding (I): randomisation
+
+To estimate the causal effect $X \rightarrow Y$ we can do a randomised control trial (RCT) in which we allocate children to treatment ($X = 1$) and control groups ($X = 0$) randomly.
+
+::: fragment
+ 
+
+The **random allocation can be represented as the deletion of an arrow** in the DAG.
+:::
+
+:::::::::: columns
+::::: {.column width="47%"}
+:::: fragment
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-28-1.png){fig-align='center' width=288}
+:::
+:::
+
+
+
+::: {style="font-size: 70%;"}
+If we don't randomise, the confounder $Z$ influence the likelihood of taking part in the program ($X$)
+:::
+::::
+:::::
+
+::: {.column width="6%"}
+:::
+
+::::: {.column width="47%"}
+:::: fragment
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-29-1.png){fig-align='center' width=288}
+:::
+:::
+
+
+
+::: {style="font-size: 70%;"}
+If we intervene and allocate participants randomly we effectively erase the arrow from $Z$ to $X$.
+:::
+::::
+:::::
+::::::::::
+
+## Dealing with confounding (II): adjustment
+
+ 
+
+::::: columns
+::: {.column width="50%"}
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-30-1.png){fig-align='center' width=288}
+:::
+:::
+
+
+:::
+
+::: {.column width="50%"}
+-   If randomisation is not feasible, an alternative approach is to block the non-causal path $X \leftarrow Z \rightarrow Y$ by adjusting or "controlling for" $Z$.
+:::
+:::::
+
+ 
+
+-   The [adjustment formula]{.underline} implied by the DAG expresses the causal effect in terms of observable quantities: $$\text{ATE} = \sum_z \left( \mathbb{E}\left[Y^{X=1}\mid Z=z\right] -  \mathbb{E}\left[Y^{X=0}\mid Z=z\right] \right) P(Z=z)$$
+
+-   In words: *compare treated and untreated units within each level of* $Z$, then average these differences across the distribution of $Z$.
+
+## Dealing with confounding (II): adjustment
+
+-   More generally, to estimate a variable’s causal effect we need to **block all non-causal paths**
+
+-   Including the confounder as covariate in a regression model is one way to control for it (caveats apply e.g. if the confounder is continuous)
+
+-   Often we may have unmeasured confounders that, although represented in the DAG, may be inaccessible for measurement.
+
+-   We need to find an alternative set of variable to adjust for.
+
+## The 'backdoor' criterion
+
+1.  List all of the paths connecting $X$ (cause) to $Y$ (outcome).
+
+2.  Check if each path is open or closed.\
+    *A path is open unless it contains a collider!*
+
+3.  Identify *backdoor paths* (those with an arrow entering $X$)
+
+4.  Close any open backdoor path by selecting appropriate variables and conditioning on them.
+
+::: fragment
+ 
+
+[**If some backdoor paths cannot be closed, then the causal effect is not identifiable from the available data..**]{.underline}
+:::
+
+## The 'backdoor' criterion: example
+
+Here $X$ is the exposure of interest, $Y$ the outcome, and $U$ an unobserved (latent) variable.
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-31-1.png){fig-align='center' width=576}
+:::
+:::
+
+
+
+::: fragment
+There are two 'indirect' paths between $X$ and $Y$
+
+1.  $X \leftarrow U \leftarrow A \rightarrow C \rightarrow Y$
+2.  $X \leftarrow U \rightarrow B \leftarrow C \rightarrow Y$
+:::
+
+::: fragment
+ 
+
+Path (2) is already blocked by a collider in $B$. Path (1) needs to be blocked; we can't condition on $U$ since is not observed, so this leaves us either $A$ or $C$ (either will suffice).
+:::
+
+## The 'backdoor' criterion: example
+
+::::: columns
+::: {.column width="50%"}
+The solution can also be found automatically using `dagitty`:
+
+
+
+::: {.cell}
+
+```{.r .cell-code}
+dag <- dagify(X ~ U, 
+              Y ~ C+X,
+              B~U+C,
+              U~A,
+              C~A,
+              latent = "U")
+
+adjustmentSets(dag, exposure="X", 
+               outcome="Y" )
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+{ C }
+{ A }
+```
+
+
+:::
+:::
+
+
+:::
+
+::: {.column width="50%"}
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-33-1.png){fig-align='center' width=576}
+:::
+:::
+
+
+:::
+:::::
+
+## Backdoor criterion and the "Table 2 fallacy"
+
+-   The backdoor criterion tells us *which variables to adjust for* to estimate a causal effect.
+
+-   The **Table 2 fallacy** happens when we misinterpret coefficients for *all* covariates in a regression as causal effects.
+
+ 
+
+-   In reality:
+
+    -   The adjusted coefficient for $X$ (with the right adjustment set) can represent the causal effect of $X \rightarrow Y$.
+    -   Coefficients for other covariates do not normally have a causal interpretation --- they’re just 'controls' to close backdoors.
+
+ 
+
+-   **Use DAGs to decide what to adjust for, and interpret only the effect of interest**.
+
+## Dealing with confounding (III): instrumental variables {.nostretch}
+
+::::::: columns
+::: {.column width="50%"}
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-34-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+:::
+
+::::: {.column width="50%"}
+:::: {style="font-size: 60%;"}
+$X \in \{0,1\}$ is the treatment (participation in the program);\
+$Y$ is the outcome (emotion regulation checklist);\
+$Z$ is an observed confounder (e.g. SES);\
+$U$ is an ***unobserved*** **confounder** (e.g. parenting style).
+
+ 
+
+::: fragment
+$I$ is an **instrumental variable**, affects $X$, but only affects $Y$ via $X$ and is independent of $U$\
+(e.g. proximity to a center that provides the program, roll-out timing, eligibility cut-offs)
+:::
+::::
+:::::
+:::::::
+
+-   The instrumental variable allows isolating the variation in $X$ that is induced by $I$ (and independent of unobserved confounder $U$)
+
+-   This "clean" variation in $X$ is used to estimate the causal effect $X \rightarrow Y$.
+
+ 
+
+-   In practice, this is often done with a *"two-step" regression*
+
+    -   *Step 1*: $X \sim I + Z$
+    -   *Step 2*: $Y \sim \hat X + Z$
+
+
+## Dealing with confounding (III): instrumental variables
+
+ 
+
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-35-1.png){fig-align='center' width=1152}
+:::
+:::
+
+
+
+::::::: columns
+::::: {.column width="50%"}
+:::: {style="font-size: 60%;"}
+
+ 
+
+Monte Carlo simulation comparing instrumental variable (two-steps) regression with simple regression with or without adjustment for the confounder $Z$.\
+ 
+
+The instrumental variable regression was implemented with the `ivreg()` function in the `AER` package.
+
+::::
+:::::
+::::: {.column width="50%"}
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-36-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+:::::
+:::::::
+
+
+## Dealing with confounding (III): instrumental variables {.nostretch}
+
+:::::: columns
+::: {.column width="50%"}
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-37-1.png){fig-align='center' width=480}
+:::
+:::
+
+
+:::
+
+:::: {.column width="50%"}
+::: {style="font-size: 60%;"}
+What if the observed confounder $Z$ also influences the instrumental variable?
+:::
+::::
+::::::
+
+<!-- ## The *do*-operator -->
+
+<!-- Pearl (1995) introduced a new operator to explicitly represents intervention on a variable -->
+
+<!-- -   The ***do*****-operator** ($\text{do}(X = x)$) represents setting $X$ to a specific value $x$. -->
+
+<!-- ::: fragment -->
+
+<!--   -->
+
+<!-- Adopting this notation the causal effect of interest is: $$P(Y=1 \mid \text{do}(X = 1)) - P(Y=1 \mid \text{do}(X = 0))$$ -->
+
+<!-- ::: -->
+
+<!-- ::: fragment -->
+
+<!--   -->
+
+<!-- **Adjustment formula** -->
+
+<!-- $$P(Y \mid \text{do}(X = x)) = \sum_{z} P(Y \mid X = x, Z = z) P(Z = z)$$ -->
+
+<!-- -   This provides a formal way to prove that we can estimate the causal effect either by ***intervening*** **on** $X$, using a randomized control trial, or by ***measuring the confounder*** $Z$ and adjusting (controlling) for it. -->
+
+<!-- ::: -->
+
+
+# Activity
+
+
+## 📝 Activity: Build Your Own DAG
+
+
+
+::::: nonincremental
+
+:::::: columns
+::: {.column width="70%"}
+
+:::: {style="font-size: 80%;"}
+
+- In small groups, **sketch a DAG** for a study you’ve done (or want to do).
+- **Highlight one causal effect** of interest (mark the \(X \rightarrow Y\) arrow).
+- **Share your DAG**:
+  - Export from **dagitty.net** and email/upload, or
+  - Draw on paper, take a photo, and send it.
+
+[Link for uploading](https://www.dropbox.com/request/Po0sjCZMkyh84PncEXXF)
+
+- We’ll project submissions and **discuss**:
+  - What assumptions are implied?
+  - What **adjustment set** identifies the effect?
+  - Is the effect **identifiable**?
+
+::::
+
+:::
+
+::: {.column width="30%"}
+
+![](img/adobe-express-qr-code.png){fig-align="center"}
+
+:::
+
+::::::
+
+:::::
+
+
+# 
+
+## Reasons why DAGs are useful
+
+-   DAGs help us reason [explicitly]{.underline} about causal pathways among variables of interest.
+
+-   By expressing our theory as a DAG, we can use D-separation to derive and test its implications.
+
+-   Drawing a DAG and checking for backdoor paths provides a principled way to decide which variables to adjust for when estimating causal effects.
+
+-   Graphical causal models offer a rigorous, transparent method for stating and scrutinizing causal assumptions.
+
+::: notes
+DAGs and causal reasoning should probably be introduced as part of undergraduate teaching of statistics; they are a useful tool for critical thinking and equips students to evaluate data-based claims with clarity.
+:::
+
+## Causal inference is hard
+
+-   Attempting to draw plausible a DAG can be a highly uncomfortable experience, as it fully exposes our uncertainty about our object of study.
+
+-   [DAGs make our assumptions transparent and easier to critique.]{.underline}
+
+-   Unless we are able to intervene (RCT) a single study rarely offers conclusive evidence.
+
+-   Establishing a convincing causal DAG requires broad, convergent evidence from multiple design and studies to constrain the plausible causal mechanisms.
+
+::: notes
+Plausibility: for example, parachute use during free fall reduces mortality, we don't need an RCT for that.
+:::
+
+## Limitations of DAGs
+
+-   DAGs are “the simplest possible” model; they clarify assumptions but cannot replace fully mechanistic, dynamic models.
+
+-   Acyclic graphs can’t capture feedback or highly interconnected systems (e.g., the brain, the economy). Such systems systems exhibit complexity (e.g. sensitivity dependence on initial conditions) that DAGs cannot capture.
+
+
+
+# References
+
+## References
+
+:::::::: columns
+::::: {.column width="70%"}
+:::: nonincremental
+::: {style="font-size: 60%;"}
+-   Pearl, J., Glymour, M., & Jewell, N. P. (2016). *Causal inference in statistics: A primer*. Wiley.
+-   Pearl, J. (2009). *Causality: Models, Reasoning, and Inference*. Cambridge University Press.
+-   Lundberg, I., Johnson, R., & Stewart, B. M. (2021). What Is Your Estimand? Defining the Target Quantity Connects Statistical Evidence to Theory. *American Sociological Review, 86*(3), 532-565.
+-   Rohrer, J. M. (2018). Thinking clearly about correlations and causation: Graphical causal models for observational data. *Advances in Methods and Practices in Psychological Science, 1*(1), 27–42.
+-   McElreath, R. (2020). *Statistical rethinking: A Bayesian course with examples in R and Stan* (2nd ed.). Chapman and Hall/CRC
+-   [The 100% CI blog](https://www.the100.ci/)
+:::
+::::
+:::::
+
+:::: {.column width="30%"}
+::: fragment
+![](img/book_cover.png){fig-align="center" width="75%"}
+:::
+::::
+::::::::
