@@ -410,17 +410,12 @@ Matteo Lisi
 <li><p>DAGs (Directed Acyclic Graphs)</p></li>
 <li><p>Testable implications of DAGs</p></li>
 <li><p>Estimating causal effects</p></li>
-<li><p>Final thoughts &amp; ‘build your DAG’ exercise</p></li>
+<li><p>Final thoughts &amp; ‘Draw your DAG’ exercise</p></li>
 </ol>
 </div>
 </section>
-<section>
-<section id="causality-and-dags" class="title-slide slide level1 inverse center" data-background-color="#EB641E">
-<h1>Causality and DAGs</h1>
-
-</section>
 <section id="correlation-does-not-imply-causation" class="slide level2">
-<h2><em>Correlation does not imply causation!</em></h2>
+<h2><em>Correlation does not imply causation</em></h2>
 
 <img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-2-1.png" class="margin-caption r-stretch quarto-figure-center" width="480"><p class="caption">Civil engineering doctorates awarded (in the US; source NSF) as a function of the per capita consumption of mozzarella cheese, measured from 2000 to 2009.</p></section>
 <section id="causality" class="slide level2">
@@ -441,63 +436,22 @@ Matteo Lisi
 <!-- ## Causal inference in human perception -->
 <!-- **Our sensory system routinely make inferences about causes of the sensory signals it receives.** -->
 <!-- ![Dekker & Lisi (2020)](img/gr1_lrg.jpg){.nostretch fig-align="center" width="60%"} -->
+<!-- ## *Common cause principle* -->
+<!-- ::: nonincremental -->
+<!-- There is no causation without correlation (Reichenbach, 1956) -->
+<!--   -->
+<!-- > If $X$ and $Y$ are statistically dependent ($X \not\!\perp\!\!\!\perp  Y$)[^1],\ -->
+<!-- > then either: -->
+<!-- > -->
+<!-- > 1.  $X$ causes $Y$; -->
+<!-- > 2.  $Y$ causes $X$; -->
+<!-- > 3.  a third variable $Z$ causes *both* $X$ and $Y$ -->
+<!-- <!-- (in which case $X \perp\!\!\!\perp  Y \mid Z$). -->
+<p>–&gt; <!-- ::: --></p>
+<!-- [^1]: The symbol $\not\!\perp\!\!\!\perp$ means *"not independent of"*. Conversely $A \!\perp\!\!\!\perp  B$ means "$A$ and $B$ are independent". -->
 </section>
-<section id="what-is-causality" class="slide level2">
-<h2>What is “causality”?</h2>
-<p>&nbsp;</p>
-<div class="fragment">
-<p><em>Everyone knows what causality is</em></p>
-<div style="font-size: 80%;">
-<p>&nbsp;</p>
-<p>mozzarella cheese <em>does not</em> cause engineering PhDs;</p>
-<p>&nbsp;</p>
-<p>if we <u>intervene</u> to increase consumption of mozzarella we would not expect this to have much influence on the number of PhDs awarded.</p>
-</div>
-</div>
-<!-- ::: fragment -->
-<!--   -->
-<!-- Hume (1748): *“We may define a cause to be an object, followed by another, \[...\] where, if the first object had not been, the second had never existed.”* -->
-<!-- ::: -->
-<!-- :::: fragment -->
-<!--   -->
-<!-- Much of 20-th century developments in statistics mostly avoided causality -->
-<!-- ::: notes -->
-<!-- One exception, Ronald Fisher's formalization of randomized controlled experiments -->
-<!-- ::: -->
-<!--   -->
-<!-- :::: -->
-<!-- ::: fragment -->
-<!-- The word "cause" is not in the vocabulary of probability theory -->
-<!-- ::: -->
-<!--   -->
-<div class="fragment">
-<!-- -->
-<h4 id="key-questions"><em>Key questions</em></h4>
-<ul>
-<li class="fragment">How can we assess causality (especially when <u>interventions</u> are not possible)?</li>
-<li class="fragment">What pattern of data and/or assumptions is required to convince people that a connection is <em>causal</em>?</li>
-</ul>
-</div>
-</section>
-<section id="common-cause-principle" class="slide level2">
-<h2><em>Common cause principle</em></h2>
-<div>
-<p>There is no causation without correlation (Reichenbach, 1956)</p>
-<p>&nbsp;</p>
-<blockquote>
-<p>If <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are statistically dependent (<span class="math inline">\(X \not\!\perp\!\!\!\perp  Y\)</span>)<sup>1</sup>,<br>
-then either:</p>
-<ol type="1">
-<li><span class="math inline">\(X\)</span> causes <span class="math inline">\(Y\)</span>;</li>
-<li><span class="math inline">\(Y\)</span> causes <span class="math inline">\(X\)</span>;</li>
-<li>a third variable <span class="math inline">\(Z\)</span> causes <em>both</em> <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span></li>
-</ol>
-</blockquote>
-<!-- (in which case $X \perp\!\!\!\perp  Y \mid Z$). -->
-</div>
-<aside><ol class="aside-footnotes"><li id="fn1"><p>The symbol <span class="math inline">\(\not\!\perp\!\!\!\perp\)</span> means <em>“not independent of”</em>. Conversely <span class="math inline">\(A \!\perp\!\!\!\perp  B\)</span> means “<span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are independent”.</p></li></ol></aside></section>
-<section id="common-cause-principle-1" class="slide level2">
-<h2><em>Common cause principle</em></h2>
+<section id="section" class="slide level2">
+<h2></h2>
 
 <img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
 <section id="directed-acyclic-graphs-dags" class="slide level2">
@@ -518,7 +472,6 @@ then either:</p>
 <li class="fragment"><p><em>Exogenous variables</em> <span class="math inline">\(\{ X \}\)</span> external variables not caused by the model.</p></li>
 <li class="fragment"><p><em>Endogenous variables</em> <span class="math inline">\(\{ Y, W, Z\}\)</span> variables determined by other variables in the model.</p></li>
 </ul>
-<!-- -   _Graphical_ definition of causality: if  -->
 </div><div class="column" style="width:50%;">
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
@@ -532,7 +485,7 @@ then either:</p>
 </div></div>
 </section>
 <section id="graphical-definitions-of-causality" class="slide level2">
-<h2>Graphical definitions of causality</h2>
+<h2>“Graphical” definitions of causality</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <ul>
@@ -558,7 +511,7 @@ then either:</p>
 <div>
 <ul>
 <li><p>Acyclicity may seem problematic in presence of <strong>feedback loops</strong>.</p></li>
-<li><p>One way to deal with these is by adding nodes for repeated measures (e.g.&nbsp;crossed-lagged panel models)</p></li>
+<li><p>One way to deal with these is by adding nodes for repeated observations of the same variable</p></li>
 </ul>
 </div>
 <div class="cell" data-layout-align="center">
@@ -607,7 +560,7 @@ then either:</p>
 <p><span class="math display">\[\begin{align*}p &amp; (X, Y,W,Z) =\\ &amp; p(Z∣W,Y) \, p(Y∣X,W) \, p(W∣X) \, p(X) \end{align*}\]</span></p>
 </div>
 <div class="fragment">
-<p>This holds regardless of the precise functional form of each “arrows”.</p>
+<p>This holds regardless of the specific functional form associated with each arrow.</p>
 </div>
 <p>&nbsp;</p>
 <div class="fragment fade-up">
@@ -624,18 +577,13 @@ then either:</p>
 </div>
 </div>
 </div></div>
-</section></section>
-<section>
-<section id="testable-implications-of-dags" class="title-slide slide level1 inverse center" data-background-color="#EB641E">
-<h1>Testable implications of DAGs</h1>
-
 </section>
-<section id="conditionaunconditional-independencies" class="slide level2">
-<h2>Conditiona/unconditional independencies</h2>
-<p>The structure of a DAG introduce constraints in the possible joint distribution of its variable that can be tested empirically.</p>
+<section id="conditional-and-unconditional-independencies" class="slide level2">
+<h2>Conditional and unconditional independencies</h2>
+<p>The structure of a DAG imposes constraints on the possible joint distribution of its variables, and these constraints can be tested empirically.</p>
 <ul>
-<li class="fragment"><p><strong>Unconditional (in)dependencies</strong>: a DAG is a statement about which variables should (or should not) be associated with one another;</p></li>
-<li class="fragment"><p><strong>Conditional (in)dependencies</strong> a DAG states also which variables should become associated or non-associated when we <em>condition</em> on some other set of variables.</p></li>
+<li class="fragment"><p><strong>Unconditional (in)dependencies</strong>: which variables should be associated, or not associated, with one another.</p></li>
+<li class="fragment"><p><strong>Conditional (in)dependencies</strong>: which variables should become associated or independent after we <em>condition</em> on another variable, or set of variables.</p></li>
 </ul>
 </section>
 <section id="what-does-conditioning-on-a-variable-means" class="slide level2">
@@ -646,7 +594,7 @@ then either:</p>
 </div>
 <p>&nbsp;</p>
 <div class="fragment">
-<p>Conditioning on <span class="math inline">\(Z\)</span> when studying the link between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> means we introduce information about <span class="math inline">\(Z\)</span> in our analysis and ask if <span class="math inline">\(X\)</span> provide any additional information (above and beyond what we already have knowing <span class="math inline">\(Z\)</span>).</p>
+<p>Conditioning on <span class="math inline">\(Z\)</span> when studying the link between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> means introducing information about <span class="math inline">\(Z\)</span> in our analysis, and asking whether <span class="math inline">\(X\)</span> provides any additional information about <span class="math inline">\(Y\)</span>, above and beyond what is already known from <span class="math inline">\(Z\)</span>.</p>
 </div>
 <div class="fragment">
 <div class="columns">
@@ -667,16 +615,16 @@ then either:</p>
 </div>
 <div class="fragment">
 <p>&nbsp;</p>
-<p>How to condition on / control for a variable in practice?</p>
+<p>How can we condition on, or control for, a variable in practice?</p>
 <ul>
 <li class="fragment"><p><strong>Stratified analysis</strong></p></li>
-<li class="fragment"><p><strong>Inclusion as covariate in regression models</strong></p></li>
+<li class="fragment"><p><strong>Including it as a covariate in a regression model</strong></p></li>
 <li class="fragment"><p><strong>Matching</strong></p></li>
 </ul>
 </div>
-<div class="fragment">
-<p>All methods of statistical control are affected by measurement errors in confounding variables.</p>
-</div>
+<!-- ::: fragment -->
+<!-- All methods of statistical control are affected by measurement errors in confounding variables. -->
+<!-- ::: -->
 </div>
 </section>
 <section id="confounding" class="slide level2 nostretch">
@@ -776,7 +724,7 @@ then either:</p>
 <li class="fragment"><p>Some examples are “fork” paths <span class="math inline">\(X \leftarrow Z \rightarrow Y\)</span> or a “pipe” paths <span class="math inline">\(X \rightarrow Z \rightarrow Y\)</span>. <strong>These paths are said to be “open” and in order to “close” them (so as to D-separate</strong> <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> and make them independent) we need to condition on <span class="math inline">\(Z\)</span>.</p></li>
 </ul>
 </section>
-<section id="section" class="slide level2 nostretch">
+<section id="section-1" class="slide level2 nostretch">
 <h2></h2>
 <h3 id="d-separation-example">D-separation: example</h3>
 <p>&nbsp; &nbsp;</p>
@@ -793,7 +741,7 @@ then either:</p>
 <p><span class="math inline">\(Z\)</span> and <span class="math inline">\(Y\)</span> are D-separated (unconditionally independent, <span class="math inline">\(Z \perp\!\!\!\perp  Y\)</span>)</p>
 </div>
 </section>
-<section id="section-1" class="slide level2 nostretch">
+<section id="section-2" class="slide level2 nostretch">
 <h2></h2>
 <h3 id="d-separation-example-1">D-separation: example</h3>
 <p>&nbsp; &nbsp;</p>
@@ -811,10 +759,10 @@ then either:</p>
 <!-- (formally: $Z \not\!\perp\!\!\!\perp  Y \mid W$) -->
 <div class="fragment">
 <p><em>This association is ‘spurious’ because</em> <span class="math inline">\(Y\)</span> is not a descendant of <span class="math inline">\(Z\)</span>.<br>
-If we were to make an intervention on <span class="math inline">\(Z\)</span> this would have no effect on <span class="math inline">\(Y\)</span>.</p>
+(If we were to make an intervention on <span class="math inline">\(Z\)</span> this would have no effect on <span class="math inline">\(Y\)</span>.)</p>
 </div>
 </section>
-<section id="section-2" class="slide level2 nostretch">
+<section id="section-3" class="slide level2 nostretch">
 <h2></h2>
 <h3 id="d-separation-example-2">D-separation: example</h3>
 <p>&nbsp; &nbsp;</p>
@@ -831,7 +779,7 @@ If we were to make an intervention on <span class="math inline">\(Z\)</span> thi
 <p>&nbsp;</p>
 <p>(formally <span class="math inline">\(Z \not\!\perp\!\!\!\perp  Y \mid U\)</span>)</p>
 </section>
-<section id="section-3" class="slide level2 nostretch">
+<section id="section-4" class="slide level2 nostretch">
 <h2></h2>
 <h3 id="d-separation-example-2-1">D-separation: example 2</h3>
 <p>&nbsp;</p>
@@ -849,7 +797,7 @@ If we were to make an intervention on <span class="math inline">\(Z\)</span> thi
 <p>Only <span class="math inline">\(Z_1\)</span> and <span class="math inline">\(Z_2\)</span> are unconditionally independent ( <span class="math inline">\(Z_1 \perp\!\!\!\perp  Z_2\)</span>).</p>
 </div>
 </section>
-<section id="section-4" class="slide level2 nostretch">
+<section id="section-5" class="slide level2 nostretch">
 <h2></h2>
 <h3 id="d-separation-example-2-2">D-separation: example 2</h3>
 <p>&nbsp;</p>
@@ -899,20 +847,20 @@ Z1 _||_ Z2</code></pre>
 </div>
 </div>
 </section>
-<section id="causal-model-testing" class="slide level2">
-<h2>Causal model testing</h2>
+<section id="testable-implications-of-dags" class="slide level2">
+<h2># Testable implications of DAGs</h2>
 <p>&nbsp;</p>
 <p><strong>We can use D-separation to falsify and test our DAG model!</strong></p>
 <ul>
 <li class="fragment"><p>We have found that <span class="math inline">\(W \perp\!\!\!\perp  Z_1 \mid X\)</span><br>
 (<span class="math inline">\(W\)</span> is independent of <span class="math inline">\(Z_1\)</span> conditional on <span class="math inline">\(X\)</span>)</p></li>
-<li class="fragment"><p>This implies that if we regress <span class="math inline">\(W\)</span> on <span class="math inline">\(X\)</span> and <span class="math inline">\(Z_1\)</span>, e.g.&nbsp;<span class="math display">\[W = \beta_1 X + \beta_2 Z_1\]</span><br>
+<li class="fragment"><p>This implies that if we regress <span class="math inline">\(W\)</span> on <span class="math inline">\(X\)</span> and <span class="math inline">\(Z_1\)</span>, e.g.&nbsp;<span class="math display">\[\widehat W = \beta_1 X + \beta_2 Z_1\]</span><br>
 we should find that <span class="math inline">\(\beta_2 \approx 0\)</span>.</p></li>
 <li class="fragment"><p>Finding that <span class="math inline">\(\beta_2\ne 0\)</span> would indicate that <span class="math inline">\(W\)</span> depends on <span class="math inline">\(Z_1\)</span> given <span class="math inline">\(X\)</span>, implying that the DAG model is wrong.</p></li>
 <li class="fragment"><p>More specifically, the DAG would be wrong because the ‘true’ model must have a path between <span class="math inline">\(W\)</span> and <span class="math inline">\(Z_1\)</span> that is not D-separated by <span class="math inline">\(X\)</span></p></li>
 </ul>
 </section>
-<section id="section-5" class="slide level2 nostretch">
+<section id="section-6" class="slide level2 nostretch">
 <h2></h2>
 <h3 id="d-separation-example-1-again">D-separation: example 1 again</h3>
 <p>&nbsp; &nbsp;</p>
@@ -933,9 +881,9 @@ we should find that <span class="math inline">\(\beta_2 \approx 0\)</span>.</p><
 <p><span class="math inline">\(Z \perp\!\!\!\perp  Y \mid \{ W,X \}\)</span></p>
 </div>
 </section>
-<section id="section-6" class="slide level2 nostretch">
+<section id="section-7" class="slide level2 nostretch">
 <h2></h2>
-<h3 id="d-separation-example-1-again-1">D-separation: example 1 again</h3>
+<h3 id="d-separation">D-separation</h3>
 <p>&nbsp;</p>
 <p>As complexity increases the answer is less and less intuitive.<br>
 Luckily these questions can be addressed by mechanically applying logical rules, which have been automated in software like <code>dagitty</code></p>
@@ -1004,7 +952,7 @@ Luckily these questions can be addressed by mechanically applying logical rules,
 <p>By testing constraints systematically one can attempt to recover the causal structure from data<sup>1</sup>. This requires a fairly large amount of data (many tests, each subject to sampling error).<br>
 When we have latent variables the output is not a unique DAG, but a a set of graphs with equivalent implications (<em>equivalence class</em>).</p>
 </div>
-<aside><ol class="aside-footnotes"><li id="fn2"><p>Inductive Causation (IC) algorithm (Velma &amp; Pearl 1990, 1993); e.g.&nbsp;see <a href="https://cran.r-project.org/web/packages/bnlearn/index.html"><code>bnlearn</code></a> package in R.</p></li></ol></aside></section></section>
+<aside><ol class="aside-footnotes"><li id="fn1"><p>Inductive Causation (IC) algorithm (Velma &amp; Pearl 1990, 1993); e.g.&nbsp;see <a href="https://cran.r-project.org/web/packages/bnlearn/index.html"><code>bnlearn</code></a> package in R.</p></li></ol></aside></section>
 <section>
 <section id="estimating-causal-effects" class="title-slide slide level1 inverse center" data-background-color="#EB641E">
 <h1>Estimating causal effects</h1>
@@ -1062,7 +1010,7 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <p><span class="math inline">\(X \in \{0,1\}\)</span> is the treatment (participation in the program); <span class="math inline">\(Y\)</span> is the outcome (emotion regulation checklist); <span class="math inline">\(Z\)</span> represents other variables (e.g.&nbsp;SES, parental stress) that may influence emotion regulation.</p>
 </div>
 </section>
-<section id="section-7" class="slide level2 nostretch">
+<section id="section-8" class="slide level2 nostretch">
 <h2></h2>
 <h3 id="what-is-your-estimand">What is your <em>estimand</em>?</h3>
 <div class="cell" data-layout-align="center">
@@ -1426,7 +1374,7 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 </div>
 </section></section>
 <section>
-<section id="section-8" class="title-slide slide level1 inverse center" data-background-color="#EB641E">
+<section id="section-9" class="title-slide slide level1 inverse center" data-background-color="#EB641E">
 <h1></h1>
 
 </section>

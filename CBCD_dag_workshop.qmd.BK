@@ -93,27 +93,75 @@ text(4.7,450,bquote(italic(r)~"="~.(round(corr_cheese$estimate,digits=2))~"  "~i
 
 <!-- ![Dekker & Lisi (2020)](img/gr1_lrg.jpg){.nostretch fig-align="center" width="60%"} -->
 
+## What is "causality"?
 
-<!-- ## *Common cause principle* -->
+ 
 
-<!-- ::: nonincremental -->
-<!-- There is no causation without correlation (Reichenbach, 1956) -->
+
+::: {style="font-size: 80%;"}
+ 
+
+mozzarella cheese *does not* cause engineering PhDs;
+
+ 
+
+if we [intervene]{.underline} to increase consumption of mozzarella we would not expect this to have much influence on the number of PhDs awarded.
+:::
+
+
+<!-- ::: fragment -->
+<!--   -->
+
+<!-- Hume (1748): *“We may define a cause to be an object, followed by another, \[...\] where, if the first object had not been, the second had never existed.”* -->
+
+<!-- ::: -->
+
+<!-- :::: fragment -->
 
 <!--   -->
 
-<!-- > If $X$ and $Y$ are statistically dependent ($X \not\!\perp\!\!\!\perp  Y$)[^1],\ -->
-<!-- > then either: -->
-<!-- > -->
-<!-- > 1.  $X$ causes $Y$; -->
-<!-- > 2.  $Y$ causes $X$; -->
-<!-- > 3.  a third variable $Z$ causes *both* $X$ and $Y$ -->
+<!-- Much of 20-th century developments in statistics mostly avoided causality -->
 
-<!-- <!-- (in which case $X \perp\!\!\!\perp  Y \mid Z$). --> -->
+<!-- ::: notes -->
+<!-- One exception, Ronald Fisher's formalization of randomized controlled experiments -->
 <!-- ::: -->
 
-<!-- [^1]: The symbol $\not\!\perp\!\!\!\perp$ means *"not independent of"*. Conversely $A \!\perp\!\!\!\perp  B$ means "$A$ and $B$ are independent". -->
+<!--   -->
+<!-- :::: -->
 
-## 
+<!-- ::: fragment -->
+<!-- The word "cause" is not in the vocabulary of probability theory -->
+<!-- ::: -->
+
+<!--   -->
+
+::: fragment
+#### *Key questions*
+
+-   How can we assess causality (especially when [interventions]{.underline} are not possible)?
+-   What pattern of data and/or assumptions is required to convince people that a connection is *causal*?
+:::
+
+## *Common cause principle*
+
+::: nonincremental
+There is no causation without correlation (Reichenbach, 1956)
+
+ 
+
+> If $X$ and $Y$ are statistically dependent ($X \not\!\perp\!\!\!\perp  Y$)[^1],\
+> then either:
+>
+> 1.  $X$ causes $Y$;
+> 2.  $Y$ causes $X$;
+> 3.  a third variable $Z$ causes *both* $X$ and $Y$
+
+<!-- (in which case $X \perp\!\!\!\perp  Y \mid Z$). -->
+:::
+
+[^1]: The symbol $\not\!\perp\!\!\!\perp$ means *"not independent of"*. Conversely $A \!\perp\!\!\!\perp  B$ means "$A$ and $B$ are independent".
+
+## *Common cause principle*
 
 ```{r}
 #| fig-height: 4
@@ -172,7 +220,7 @@ dag %>%
 
 -   *Endogenous variables* $\{ Y, W, Z\}$ variables determined by other variables in the model.
 
-
+<!-- -   _Graphical_ definition of causality: if  -->
 :::
 
 ::: {.column width="50%"}
@@ -204,7 +252,7 @@ ggdag(dag, node=FALSE, text_col = "black", text_size = 8) +
 :::
 :::::
 
-## "Graphical" definitions of causality
+## Graphical definitions of causality
 
 ::::: columns
 ::: {.column width="50%"}
@@ -249,7 +297,7 @@ ggdag(dag, node=FALSE, text_col = "black", text_size = 8) +
 ::: nonincremental
 -   Acyclicity may seem problematic in presence of **feedback loops**.
 
--   One way to deal with these is by adding nodes for repeated observations of the same variable
+-   One way to deal with these is by adding nodes for repeated measures (e.g. crossed-lagged panel models)
 :::
 
 ```{r}
@@ -276,6 +324,19 @@ dag <- dag %>%
   mutate(
     label = c("X[1]","X[1]", "X[2]",  "X[2]", "X[3]", "Y[1]","Y[1]", "Y[2]","Y[2]", "Y[3]")  # plotmath as strings
   )
+
+# dag %>%
+#   arrange(name) %>%
+#   ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+#   geom_dag_edges() +
+#   geom_dag_text(
+#     parse = TRUE,
+#     col = "black",
+#     size=8,
+#     label = c(expression(X[1]), expression(X[2]), expression(X[3]),
+#               expression(Y[1]), expression(Y[2]), expression(Y[3]))
+#   ) +
+#   theme_dag()
 
 dag %>%
   arrange(name) %>%
@@ -331,6 +392,27 @@ dag <- dagify(
   )
 )
 
+# # Create the plot with subscripts
+# dag %>%
+#   tidy_dagitty() %>%
+#   arrange(name) %>%
+#   ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+#   geom_dag_edges() +
+#   geom_dag_text(
+#     parse = TRUE,
+#     col = "black",
+#     size=8,
+#     label = c(expression(bold("X")), 
+#               expression(bold("W")), 
+#               expression(bold("Y")), 
+#               expression(bold("Z")), 
+#               expression(epsilon["X"]), 
+#               expression(epsilon["W"]),
+#               expression(epsilon["Y"]),
+#               expression(epsilon["Z"]))
+#   ) +
+#   theme_dag()
+
 dag %>%
   tidy_dagitty() %>%
   arrange(name) %>%
@@ -383,7 +465,7 @@ We can write the **joint distribution** of all variables in a DAG as the product
 :::
 
 ::: fragment
-This holds regardless of the specific functional form associated with each arrow.
+This holds regardless of the precise functional form of each "arrows".
 :::
 
  
@@ -418,14 +500,15 @@ ggdag(dag, node=FALSE, text_col = "black", text_size = 8) +
 :::
 :::::::::
 
-## Conditional and unconditional independencies
+# Testable implications of DAGs
 
-The structure of a DAG imposes constraints on the possible joint distribution of its variables, and these constraints can be tested empirically.
+## Conditiona/unconditional independencies
 
-- **Unconditional (in)dependencies**: which variables should be associated, or not associated, with one another.
+The structure of a DAG introduce constraints in the possible joint distribution of its variable that can be tested empirically.
 
-- **Conditional (in)dependencies**: which variables should become associated or independent after we *condition* on another variable, or set of variables.
+-   **Unconditional (in)dependencies**: a DAG is a statement about which variables should (or should not) be associated with one another;
 
+-   **Conditional (in)dependencies** a DAG states also which variables should become associated or non-associated when we *condition* on some other set of variables.
 
 ## What does *"conditioning on a variable"* means?
 
@@ -436,9 +519,8 @@ The structure of a DAG imposes constraints on the possible joint distribution of
 
  
 
-
 ::: fragment
-Conditioning on $Z$ when studying the link between $X$ and $Y$ means introducing information about $Z$ in our analysis, and asking whether $X$ provides any additional information about $Y$, above and beyond what is already known from $Z$.
+Conditioning on $Z$ when studying the link between $X$ and $Y$ means we introduce information about $Z$ in our analysis and ask if $X$ provide any additional information (above and beyond what we already have knowing $Z$).
 :::
 
 :::::: fragment
@@ -474,19 +556,18 @@ ggdag(dag, node=FALSE, text_col = "black", text_size = 8) +
 ::: fragment
  
 
-How can we condition on, or control for, a variable in practice?
+How to condition on / control for a variable in practice?
 
 -   **Stratified analysis**
 
--   **Including it as a covariate in a regression model**
+-   **Inclusion as covariate in regression models**
 
 -   **Matching**
 :::
 
-<!-- ::: fragment -->
-<!-- All methods of statistical control are affected by measurement errors in confounding variables. -->
-<!-- ::: -->
-
+::: fragment
+All methods of statistical control are affected by measurement errors in confounding variables.
+:::
 :::::::::::
 
 ## Confounding {.nostretch}
@@ -687,7 +768,7 @@ abline(a = a, b = b, col="blue",lwd=1)
 
 <!-- ::: -->
 
-## Conditional independencies in complex DAGS   (D-separation) {.nostretch}
+## Conditional independencies in complex DAGS (D-separation) {.nostretch}
 
 -   Realistic causal models are more complex and have more than 1 path between variables.
 
@@ -786,7 +867,7 @@ However, $W$ is a collider node, so if we condition our analysis on $W$ we would
 
 ::: fragment
 *This association is 'spurious' because* $Y$ is not a descendant of $Z$.\
-(If we were to make an intervention on $Z$ this would have no effect on $Y$.)
+If we were to make an intervention on $Z$ this would have no effect on $Y$.
 :::
 
 ##  {.nostretch}
@@ -994,7 +1075,7 @@ dag <- dagify(
 impliedConditionalIndependencies(dag)
 ```
 
-## # Testable implications of DAGs
+## Causal model testing
 
  
 
@@ -1003,7 +1084,7 @@ impliedConditionalIndependencies(dag)
 -   We have found that $W \perp\!\!\!\perp  Z_1 \mid X$\
     ($W$ is independent of $Z_1$ conditional on $X$)
 
--   This implies that if we regress $W$ on $X$ and $Z_1$, e.g. $$\widehat W = \beta_1 X + \beta_2 Z_1$$\
+-   This implies that if we regress $W$ on $X$ and $Z_1$, e.g. $$W = \beta_1 X + \beta_2 Z_1$$\
     we should find that $\beta_2 \approx 0$.
 
 -   Finding that $\beta_2\ne 0$ would indicate that $W$ depends on $Z_1$ given $X$, implying that the DAG model is wrong.
@@ -1063,7 +1144,7 @@ $Z \perp\!\!\!\perp  Y \mid \{ W,X \}$
 
 ##  {.nostretch}
 
-### D-separation
+### D-separation: example 1 again
 
  
 
