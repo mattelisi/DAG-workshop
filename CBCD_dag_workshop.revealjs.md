@@ -17,27 +17,23 @@ filters: [bg_style.lua]
 ---
 
 
-
-
-## Outline
-
-
-
 ::: {.cell}
 
 :::
 
 
 
-::: nonincremental
-1.  DAGs (Directed Acyclic Graphs)
+<!-- ## Outline -->
 
-2.  Testable implications of DAGs
+<!-- ::: nonincremental -->
+<!-- 1.  DAGs (Directed Acyclic Graphs) -->
 
-3.  Estimating causal effects
+<!-- 2.  Testable implications of DAGs -->
 
-4.  Final thoughts & 'Draw your DAG' exercise
-:::
+<!-- 3.  Estimating causal effects -->
+
+<!-- 4.  Final thoughts & 'Draw your DAG' exercise -->
+<!-- ::: -->
 
 
 ## *Correlation does not imply causation*
@@ -91,7 +87,7 @@ filters: [bg_style.lua]
 <!-- > 2.  $Y$ causes $X$; -->
 <!-- > 3.  a third variable $Z$ causes *both* $X$ and $Y$ -->
 
-<!-- <!-- (in which case $X \perp\!\!\!\perp  Y \mid Z$). --> -->
+<!-- <!-- (in which case $X \perp\!\!\!\perp  Y \mid Z$). -->
 <!-- ::: -->
 
 <!-- [^1]: The symbol $\not\!\perp\!\!\!\perp$ means *"not independent of"*. Conversely $A \!\perp\!\!\!\perp  B$ means "$A$ and $B$ are independent". -->
@@ -309,6 +305,8 @@ $$Y \perp\!\!\!\perp  X \mid Z$$
 ::: fragment
  
 
+:::: nonincremental
+
 How can we condition on, or control for, a variable in practice?
 
 -   **Stratified analysis**
@@ -316,6 +314,9 @@ How can we condition on, or control for, a variable in practice?
 -   **Including it as a covariate in a regression model**
 
 -   **Matching**
+
+::::
+
 :::
 
 <!-- ::: fragment -->
@@ -434,7 +435,7 @@ How can we condition on, or control for, a variable in practice?
 
 ## Conditional independencies in complex DAGS   (D-separation) {.nostretch}
 
--   Realistic causal models are more complex and have more than 1 path between variables.
+-   Realistic causal models are typically more complex and have more than 1 path between variables.
 
 -   D-separation ("D" stands for *directional*) is when some variables on a directed graphs are independent of others
 
@@ -603,7 +604,7 @@ Z1 _||_ Z2
 
 
 
-## # Testable implications of DAGs
+## Testable implications of DAGs
 
  
 
@@ -759,7 +760,6 @@ When we have latent variables the output is not a unique DAG, but a a set of gra
 
 [^2]: Inductive Causation (IC) algorithm (Velma & Pearl 1990, 1993); e.g. see [`bnlearn`](https://cran.r-project.org/web/packages/bnlearn/index.html) package in R.
 
-# Estimating causal effects
 
 ## Estimating causal effects
 
@@ -813,44 +813,54 @@ When we have latent variables the output is not a unique DAG, but a a set of gra
 $X \in \{0,1\}$ is the treatment (participation in the program); $Y$ is the outcome (emotion regulation checklist); $Z$ represents other variables (e.g. SES, parental stress) that may influence emotion regulation.
 :::
 
-##  {.nostretch}
+<!-- ##  {.nostretch} -->
 
-### What is your *estimand*?
+<!-- ### What is your *estimand*? -->
 
+<!-- ```{r} -->
+<!-- #| fig-height: 2 -->
+<!-- #| fig-width: 3  # Half the slider width when default slide width is 4 -->
+<!-- #| fig-align: center -->
+<!-- #| echo: FALSE -->
+<!-- #|  -->
+<!-- coord_dag <- list(x = c(X = -1, Y = 1, Z = 0)*1.5, -->
+<!--                   y = c(X = -1, Y = -1, Z = 1)) -->
 
+<!-- dag <- dagify(Y ~ Z, -->
+<!--               Y ~ X, -->
+<!--               coords = coord_dag) -->
 
-::: {.cell layout-align="center"}
-::: {.cell-output-display}
-![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-26-1.png){fig-align='center' width=288}
-:::
-:::
+<!-- ggdag(dag, node=FALSE, text_col = "black", text_size = 8) +  -->
+<!--   theme_dag()+ -->
+<!--   geom_dag_edges(aes(edge_colour = ifelse(name == "X" & to == "Y", "blue", "black"), -->
+<!--                      edge_width = ifelse(name == "X" & to == "Y", 1.2, 0.5)))  -->
 
+<!-- ``` -->
 
+<!-- ::::: {style="font-size: 80%;"} -->
+<!-- -   The **estimand** is the target causal quantity, not just a regression coefficient. (e.g. the average causal effect in a population). -->
 
-::::: {style="font-size: 80%;"}
--   The **estimand** is the target causal quantity, not just a regression coefficient. (e.g. the average causal effect in a population).
+<!-- -   Lundberg et al (2021) distinguish -->
 
--   Lundberg et al (2021) distinguish
+<!--     -   [theoretical estimand]{.underline}, composed by a *unit-level causal effect* (e.g. the child-specific difference in potential outcomes), and a *target population* (e.g. preschoolers in England); -->
+<!--     -   [empirical estimand]{.underline}, defined in terms of observable quantities (e.g. mean difference between groups). -->
 
-    -   [theoretical estimand]{.underline}, composed by a *unit-level causal effect* (e.g. the child-specific difference in potential outcomes), and a *target population* (e.g. preschoolers in England);
-    -   [empirical estimand:]{.underline}, defined in terms of observable quantities (e.g. mean difference between groups).
+<!-- -   **DAGs show the assumptions needed to connect the theoretical to the empirical.** -->
 
--   **DAGs show the assumptions needed to connect the theoretical to the empirical.**.
+<!--   -->
 
- 
+<!-- ::: fragment -->
+<!-- In the example, computing the difference in means between treatment and control groups gives a *sample average treatment effect* (SATE). -->
+<!-- ::: -->
 
-::: fragment
-In the example, computing the difference in means between treatment and control groups gives a *sample average treatment effect* (SATE).
-:::
+<!--   -->
 
- 
+<!-- ::: fragment -->
+<!-- To generalize to the population (population ATE), we may need extra steps (e.g. post-stratification if distribution of covariates $Z$ in the sample differs from population). -->
 
-::: fragment
-To generalize to the population (population ATE), we may need extra steps (e.g. post-stratification if distribution of covariates $Z$ in the sample differs from population).
-
-<!-- The distribution of covariates $Z$ may be different in the _target population_, in which case we may need some additional steps (e.g. post-stratification) to obtain a true _population average treatment effect_ (PATE or simply ATE) $$\text{ATE} = \mathbb{E}\left[Y^{X=1} -Y^{X=0}\right]$$ -->
-:::
-:::::
+<!-- <!-- The distribution of covariates $Z$ may be different in the _target population_, in which case we may need some additional steps (e.g. post-stratification) to obtain a true _population average treatment effect_ (PATE or simply ATE) $$\text{ATE} = \mathbb{E}\left[Y^{X=1} -Y^{X=0}\right]$$ --> -->
+<!-- ::: -->
+<!-- ::::: -->
 
 ## Causal effects & confounding
 
@@ -862,7 +872,7 @@ To generalize to the population (population ATE), we may need extra steps (e.g. 
 
 ::: {.cell layout-align="center"}
 ::: {.cell-output-display}
-![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-27-1.png){fig-align='center' width=288}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-26-1.png){fig-align='center' width=288}
 :::
 :::
 
@@ -907,7 +917,7 @@ The **random allocation can be represented as the deletion of an arrow** in the 
 
 ::: {.cell layout-align="center"}
 ::: {.cell-output-display}
-![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-28-1.png){fig-align='center' width=288}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-27-1.png){fig-align='center' width=288}
 :::
 :::
 
@@ -928,7 +938,7 @@ If we don't randomise, the confounder $Z$ influence the likelihood of taking par
 
 ::: {.cell layout-align="center"}
 ::: {.cell-output-display}
-![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-29-1.png){fig-align='center' width=288}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-28-1.png){fig-align='center' width=288}
 :::
 :::
 
@@ -951,7 +961,7 @@ If we intervene and allocate participants randomly we effectively erase the arro
 
 ::: {.cell layout-align="center"}
 ::: {.cell-output-display}
-![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-30-1.png){fig-align='center' width=288}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-29-1.png){fig-align='center' width=288}
 :::
 :::
 
@@ -975,7 +985,7 @@ If we intervene and allocate participants randomly we effectively erase the arro
 
 -   Including the confounder as covariate in a regression model is one way to control for it (caveats apply e.g. if the confounder is continuous)
 
--   Often we may have unmeasured confounders that, although represented in the DAG, may be inaccessible for measurement.
+-   Often we may have *unmeasured confounders* that, although represented in the DAG, may be inaccessible for measurement.
 
 -   We need to find an alternative set of variable to adjust for.
 
@@ -993,7 +1003,7 @@ If we intervene and allocate participants randomly we effectively erase the arro
 ::: fragment
  
 
-[**If some backdoor paths cannot be closed, then the causal effect is not identifiable from the available data..**]{.underline}
+[**If some backdoor paths cannot be closed, then the causal effect is not identifiable from the available data**]{.underline}
 :::
 
 ## The 'backdoor' criterion: example
@@ -1004,7 +1014,7 @@ Here $X$ is the exposure of interest, $Y$ the outcome, and $U$ an unobserved (la
 
 ::: {.cell layout-align="center"}
 ::: {.cell-output-display}
-![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-31-1.png){fig-align='center' width=576}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-30-1.png){fig-align='center' width=576}
 :::
 :::
 
@@ -1064,7 +1074,7 @@ adjustmentSets(dag, exposure="X",
 
 ::: {.cell layout-align="center"}
 ::: {.cell-output-display}
-![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-33-1.png){fig-align='center' width=576}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-32-1.png){fig-align='center' width=576}
 :::
 :::
 
@@ -1072,22 +1082,23 @@ adjustmentSets(dag, exposure="X",
 :::
 :::::
 
-## Backdoor criterion and the "Table 2 fallacy"
+<!-- ## Backdoor criterion and the "Table 2 fallacy" -->
 
--   The backdoor criterion tells us *which variables to adjust for* to estimate a causal effect.
+<!-- -   The backdoor criterion tells us *which variables to adjust for* to estimate a causal effect. -->
 
--   The **Table 2 fallacy** happens when we misinterpret coefficients for *all* covariates in a regression as causal effects.
+<!-- -   The **Table 2 fallacy** happens when we misinterpret coefficients for *all* covariates in a regression as causal effects. -->
 
- 
+<!--   -->
 
--   In reality:
+<!-- -   In reality: -->
 
-    -   The adjusted coefficient for $X$ (with the right adjustment set) can represent the causal effect of $X \rightarrow Y$.
-    -   Coefficients for other covariates do not normally have a causal interpretation --- they’re just 'controls' to close backdoors.
+<!--     -   The adjusted coefficient for $X$ (with the right adjustment set) can represent the causal effect of $X \rightarrow Y$. -->
+<!--     -   Coefficients for other covariates do not normally have a causal interpretation --- they’re just 'controls' to close backdoors. -->
 
- 
+<!--   -->
 
--   **Use DAGs to decide what to adjust for, and interpret only the effect of interest**.
+<!-- -   **Use DAGs to decide what to adjust for, and interpret only the effect of interest**. -->
+
 
 ## Dealing with confounding (III): instrumental variables {.nostretch}
 
@@ -1097,7 +1108,7 @@ adjustmentSets(dag, exposure="X",
 
 ::: {.cell layout-align="center"}
 ::: {.cell-output-display}
-![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-34-1.png){fig-align='center' width=480}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-33-1.png){fig-align='center' width=480}
 :::
 :::
 
@@ -1141,7 +1152,7 @@ $I$ is an **instrumental variable**, affects $X$, but only affects $Y$ via $X$ a
 
 ::: {.cell layout-align="center"}
 ::: {.cell-output-display}
-![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-35-1.png){fig-align='center' width=1152}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-34-1.png){fig-align='center' width=1152}
 :::
 :::
 
@@ -1165,7 +1176,7 @@ The instrumental variable regression was implemented with the `ivreg()` function
 
 ::: {.cell layout-align="center"}
 ::: {.cell-output-display}
-![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-36-1.png){fig-align='center' width=480}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-35-1.png){fig-align='center' width=480}
 :::
 :::
 
@@ -1182,7 +1193,7 @@ The instrumental variable regression was implemented with the `ivreg()` function
 
 ::: {.cell layout-align="center"}
 ::: {.cell-output-display}
-![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-37-1.png){fig-align='center' width=480}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-36-1.png){fig-align='center' width=480}
 :::
 :::
 
@@ -1223,8 +1234,6 @@ What if the observed confounder $Z$ also influences the instrumental variable?
 <!-- ::: -->
 
 
-# Activity
-
 
 ## 📝 Activity: Build Your Own DAG
 
@@ -1247,8 +1256,8 @@ What if the observed confounder $Z$ also influences the instrumental variable?
 
 - We’ll project submissions and **discuss**:
   - What assumptions are implied?
-  - What **adjustment set** identifies the effect?
-  - Is the effect **identifiable**?
+  - What adjustment set identifies the effect?
+  - Is the effect identifiable?
 
 ::::
 
@@ -1265,7 +1274,6 @@ What if the observed confounder $Z$ also influences the instrumental variable?
 :::::
 
 
-# 
 
 ## Reasons why DAGs are useful
 
@@ -1301,9 +1309,6 @@ Plausibility: for example, parachute use during free fall reduces mortality, we 
 
 -   Acyclic graphs can’t capture feedback or highly interconnected systems (e.g., the brain, the economy). Such systems systems exhibit complexity (e.g. sensitivity dependence on initial conditions) that DAGs cannot capture.
 
-
-
-# References
 
 ## References
 

@@ -403,16 +403,15 @@ Matteo Lisi
 </div>
 
 </section>
-<section id="outline" class="slide level2">
-<h2>Outline</h2>
-<div>
-<ol type="1">
-<li><p>DAGs (Directed Acyclic Graphs)</p></li>
-<li><p>Testable implications of DAGs</p></li>
-<li><p>Estimating causal effects</p></li>
-<li><p>Final thoughts &amp; ‘Draw your DAG’ exercise</p></li>
-</ol>
-</div>
+<section class="slide level2">
+
+<!-- ## Outline -->
+<!-- ::: nonincremental -->
+<!-- 1.  DAGs (Directed Acyclic Graphs) -->
+<!-- 2.  Testable implications of DAGs -->
+<!-- 3.  Estimating causal effects -->
+<!-- 4.  Final thoughts & 'Draw your DAG' exercise -->
+<!-- ::: -->
 </section>
 <section id="correlation-does-not-imply-causation" class="slide level2">
 <h2><em>Correlation does not imply causation</em></h2>
@@ -447,7 +446,7 @@ Matteo Lisi
 <!-- > 2.  $Y$ causes $X$; -->
 <!-- > 3.  a third variable $Z$ causes *both* $X$ and $Y$ -->
 <!-- <!-- (in which case $X \perp\!\!\!\perp  Y \mid Z$). -->
-<p>–&gt; <!-- ::: --></p>
+<!-- ::: -->
 <!-- [^1]: The symbol $\not\!\perp\!\!\!\perp$ means *"not independent of"*. Conversely $A \!\perp\!\!\!\perp  B$ means "$A$ and $B$ are independent". -->
 </section>
 <section id="section" class="slide level2">
@@ -615,12 +614,14 @@ Matteo Lisi
 </div>
 <div class="fragment">
 <p>&nbsp;</p>
+<div>
 <p>How can we condition on, or control for, a variable in practice?</p>
 <ul>
-<li class="fragment"><p><strong>Stratified analysis</strong></p></li>
-<li class="fragment"><p><strong>Including it as a covariate in a regression model</strong></p></li>
-<li class="fragment"><p><strong>Matching</strong></p></li>
+<li><p><strong>Stratified analysis</strong></p></li>
+<li><p><strong>Including it as a covariate in a regression model</strong></p></li>
+<li><p><strong>Matching</strong></p></li>
 </ul>
+</div>
 </div>
 <!-- ::: fragment -->
 <!-- All methods of statistical control are affected by measurement errors in confounding variables. -->
@@ -717,7 +718,7 @@ Matteo Lisi
 <section id="conditional-independencies-in-complex-dags-d-separation" class="slide level2 nostretch">
 <h2>Conditional independencies in complex DAGS (D-separation)</h2>
 <ul>
-<li class="fragment"><p>Realistic causal models are more complex and have more than 1 path between variables.</p></li>
+<li class="fragment"><p>Realistic causal models are typically more complex and have more than 1 path between variables.</p></li>
 <li class="fragment"><p>D-separation (“D” stands for <em>directional</em>) is when some variables on a directed graphs are independent of others</p></li>
 <li class="fragment"><p>Assuming we are not conditioning on any variable, <strong>two variables in a DAG are D-separated if all the paths between them contain a collider.</strong></p></li>
 <li class="fragment"><p>Paths that do not contains colliders implies a correlation (dependency) between variables.</p></li>
@@ -848,7 +849,7 @@ Z1 _||_ Z2</code></pre>
 </div>
 </section>
 <section id="testable-implications-of-dags" class="slide level2">
-<h2># Testable implications of DAGs</h2>
+<h2>Testable implications of DAGs</h2>
 <p>&nbsp;</p>
 <p><strong>We can use D-separation to falsify and test our DAG model!</strong></p>
 <ul>
@@ -953,12 +954,7 @@ Luckily these questions can be addressed by mechanically applying logical rules,
 When we have latent variables the output is not a unique DAG, but a a set of graphs with equivalent implications (<em>equivalence class</em>).</p>
 </div>
 <aside><ol class="aside-footnotes"><li id="fn1"><p>Inductive Causation (IC) algorithm (Velma &amp; Pearl 1990, 1993); e.g.&nbsp;see <a href="https://cran.r-project.org/web/packages/bnlearn/index.html"><code>bnlearn</code></a> package in R.</p></li></ol></aside></section>
-<section>
-<section id="estimating-causal-effects" class="title-slide slide level1 inverse center" data-background-color="#EB641E">
-<h1>Estimating causal effects</h1>
-
-</section>
-<section id="estimating-causal-effects-1" class="slide level2">
+<section id="estimating-causal-effects" class="slide level2">
 <h2>Estimating causal effects</h2>
 <ul>
 <li class="fragment"><p><u>Example:</u> aim to assess the causal effect of a program aimed at improving emotion regulation in pre-schoolers:</p>
@@ -1009,39 +1005,39 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <p>&nbsp;</p>
 <p><span class="math inline">\(X \in \{0,1\}\)</span> is the treatment (participation in the program); <span class="math inline">\(Y\)</span> is the outcome (emotion regulation checklist); <span class="math inline">\(Z\)</span> represents other variables (e.g.&nbsp;SES, parental stress) that may influence emotion regulation.</p>
 </div>
-</section>
-<section id="section-8" class="slide level2 nostretch">
-<h2></h2>
-<h3 id="what-is-your-estimand">What is your <em>estimand</em>?</h3>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-26-1.png" class="quarto-figure quarto-figure-center" width="288"></p>
-</figure>
-</div>
-</div>
-</div>
-<div style="font-size: 80%;">
-<ul>
-<li class="fragment"><p>The <strong>estimand</strong> is the target causal quantity, not just a regression coefficient. (e.g.&nbsp;the average causal effect in a population).</p></li>
-<li class="fragment"><p>Lundberg et al (2021) distinguish</p>
-<ul>
-<li class="fragment"><u>theoretical estimand</u>, composed by a <em>unit-level causal effect</em> (e.g.&nbsp;the child-specific difference in potential outcomes), and a <em>target population</em> (e.g.&nbsp;preschoolers in England);</li>
-<li class="fragment"><u>empirical estimand:</u>, defined in terms of observable quantities (e.g.&nbsp;mean difference between groups).</li>
-</ul></li>
-<li class="fragment"><p><strong>DAGs show the assumptions needed to connect the theoretical to the empirical.</strong>.</p></li>
-</ul>
-<p>&nbsp;</p>
-<div class="fragment">
-<p>In the example, computing the difference in means between treatment and control groups gives a <em>sample average treatment effect</em> (SATE).</p>
-</div>
-<p>&nbsp;</p>
-<div class="fragment">
-<p>To generalize to the population (population ATE), we may need extra steps (e.g.&nbsp;post-stratification if distribution of covariates <span class="math inline">\(Z\)</span> in the sample differs from population).</p>
-<!-- The distribution of covariates $Z$ may be different in the _target population_, in which case we may need some additional steps (e.g. post-stratification) to obtain a true _population average treatment effect_ (PATE or simply ATE) $$\text{ATE} = \mathbb{E}\left[Y^{X=1} -Y^{X=0}\right]$$ -->
-</div>
-</div>
+<!-- ##  {.nostretch} -->
+<!-- ### What is your *estimand*? -->
+<!-- ```{r} -->
+<!-- #| fig-height: 2 -->
+<!-- #| fig-width: 3  # Half the slider width when default slide width is 4 -->
+<!-- #| fig-align: center -->
+<!-- #| echo: FALSE -->
+<!-- #|  -->
+<!-- coord_dag <- list(x = c(X = -1, Y = 1, Z = 0)*1.5, -->
+<!--                   y = c(X = -1, Y = -1, Z = 1)) -->
+<!-- dag <- dagify(Y ~ Z, -->
+<!--               Y ~ X, -->
+<!--               coords = coord_dag) -->
+<!-- ggdag(dag, node=FALSE, text_col = "black", text_size = 8) +  -->
+<!--   theme_dag()+ -->
+<!--   geom_dag_edges(aes(edge_colour = ifelse(name == "X" & to == "Y", "blue", "black"), -->
+<!--                      edge_width = ifelse(name == "X" & to == "Y", 1.2, 0.5)))  -->
+<!-- ``` -->
+<!-- ::::: {style="font-size: 80%;"} -->
+<!-- -   The **estimand** is the target causal quantity, not just a regression coefficient. (e.g. the average causal effect in a population). -->
+<!-- -   Lundberg et al (2021) distinguish -->
+<!--     -   [theoretical estimand]{.underline}, composed by a *unit-level causal effect* (e.g. the child-specific difference in potential outcomes), and a *target population* (e.g. preschoolers in England); -->
+<!--     -   [empirical estimand]{.underline}, defined in terms of observable quantities (e.g. mean difference between groups). -->
+<!-- -   **DAGs show the assumptions needed to connect the theoretical to the empirical.** -->
+<!--   -->
+<!-- ::: fragment -->
+<!-- In the example, computing the difference in means between treatment and control groups gives a *sample average treatment effect* (SATE). -->
+<!-- ::: -->
+<!--   -->
+<!-- ::: fragment -->
+<!-- To generalize to the population (population ATE), we may need extra steps (e.g. post-stratification if distribution of covariates $Z$ in the sample differs from population). -->
+<!-- <!-- The distribution of covariates $Z$ may be different in the _target population_, in which case we may need some additional steps (e.g. post-stratification) to obtain a true _population average treatment effect_ (PATE or simply ATE) $$\text{ATE} = \mathbb{E}\left[Y^{X=1} -Y^{X=0}\right]$$ -->
+<p>–&gt; <!-- ::: --> <!-- ::::: --></p>
 </section>
 <section id="causal-effects-confounding" class="slide level2">
 <h2>Causal effects &amp; confounding</h2>
@@ -1052,7 +1048,7 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-27-1.png" class="quarto-figure quarto-figure-center" width="288"></p>
+<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-26-1.png" class="quarto-figure quarto-figure-center" width="288"></p>
 </figure>
 </div>
 </div>
@@ -1088,7 +1084,7 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-28-1.png" class="quarto-figure quarto-figure-center" width="288"></p>
+<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-27-1.png" class="quarto-figure quarto-figure-center" width="288"></p>
 </figure>
 </div>
 </div>
@@ -1105,7 +1101,7 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-29-1.png" class="quarto-figure quarto-figure-center" width="288"></p>
+<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-28-1.png" class="quarto-figure quarto-figure-center" width="288"></p>
 </figure>
 </div>
 </div>
@@ -1125,7 +1121,7 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-30-1.png" class="quarto-figure quarto-figure-center" width="288"></p>
+<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-29-1.png" class="quarto-figure quarto-figure-center" width="288"></p>
 </figure>
 </div>
 </div>
@@ -1146,7 +1142,7 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <ul>
 <li class="fragment"><p>More generally, to estimate a variable’s causal effect we need to <strong>block all non-causal paths</strong></p></li>
 <li class="fragment"><p>Including the confounder as covariate in a regression model is one way to control for it (caveats apply e.g.&nbsp;if the confounder is continuous)</p></li>
-<li class="fragment"><p>Often we may have unmeasured confounders that, although represented in the DAG, may be inaccessible for measurement.</p></li>
+<li class="fragment"><p>Often we may have <em>unmeasured confounders</em> that, although represented in the DAG, may be inaccessible for measurement.</p></li>
 <li class="fragment"><p>We need to find an alternative set of variable to adjust for.</p></li>
 </ul>
 </section>
@@ -1161,14 +1157,14 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 </ol>
 <div class="fragment">
 <p>&nbsp;</p>
-<p><u><strong>If some backdoor paths cannot be closed, then the causal effect is not identifiable from the available data..</strong></u></p>
+<p><u><strong>If some backdoor paths cannot be closed, then the causal effect is not identifiable from the available data</strong></u></p>
 </div>
 </section>
 <section id="the-backdoor-criterion-example" class="slide level2">
 <h2>The ‘backdoor’ criterion: example</h2>
 <p>Here <span class="math inline">\(X\)</span> is the exposure of interest, <span class="math inline">\(Y\)</span> the outcome, and <span class="math inline">\(U\)</span> an unobserved (latent) variable.</p>
 
-<img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-31-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"><div class="fragment">
+<img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-30-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"><div class="fragment">
 <p>There are two ‘indirect’ paths between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span></p>
 <ol type="1">
 <li class="fragment"><span class="math inline">\(X \leftarrow U \leftarrow A \rightarrow C \rightarrow Y\)</span></li>
@@ -1205,31 +1201,21 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-33-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-32-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
 </div>
 </div></div>
-</section>
-<section id="backdoor-criterion-and-the-table-2-fallacy" class="slide level2">
-<h2>Backdoor criterion and the “Table 2 fallacy”</h2>
-<ul>
-<li class="fragment"><p>The backdoor criterion tells us <em>which variables to adjust for</em> to estimate a causal effect.</p></li>
-<li class="fragment"><p>The <strong>Table 2 fallacy</strong> happens when we misinterpret coefficients for <em>all</em> covariates in a regression as causal effects.</p></li>
-</ul>
-<p>&nbsp;</p>
-<ul>
-<li class="fragment"><p>In reality:</p>
-<ul>
-<li class="fragment">The adjusted coefficient for <span class="math inline">\(X\)</span> (with the right adjustment set) can represent the causal effect of <span class="math inline">\(X \rightarrow Y\)</span>.</li>
-<li class="fragment">Coefficients for other covariates do not normally have a causal interpretation — they’re just ‘controls’ to close backdoors.</li>
-</ul></li>
-</ul>
-<p>&nbsp;</p>
-<ul>
-<li class="fragment"><strong>Use DAGs to decide what to adjust for, and interpret only the effect of interest</strong>.</li>
-</ul>
+<!-- ## Backdoor criterion and the "Table 2 fallacy" -->
+<!-- -   The backdoor criterion tells us *which variables to adjust for* to estimate a causal effect. -->
+<!-- -   The **Table 2 fallacy** happens when we misinterpret coefficients for *all* covariates in a regression as causal effects. -->
+<!--   -->
+<!-- -   In reality: -->
+<!--     -   The adjusted coefficient for $X$ (with the right adjustment set) can represent the causal effect of $X \rightarrow Y$. -->
+<!--     -   Coefficients for other covariates do not normally have a causal interpretation --- they’re just 'controls' to close backdoors. -->
+<!--   -->
+<!-- -   **Use DAGs to decide what to adjust for, and interpret only the effect of interest**. -->
 </section>
 <section id="dealing-with-confounding-iii-instrumental-variables" class="slide level2 nostretch">
 <h2>Dealing with confounding (III): instrumental variables</h2>
@@ -1239,7 +1225,7 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-34-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-33-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
 </figure>
 </div>
 </div>
@@ -1277,7 +1263,7 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-35-1.png" class="quarto-figure quarto-figure-center" width="1152"></p>
+<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-34-1.png" class="quarto-figure quarto-figure-center" width="1152"></p>
 </figure>
 </div>
 </div>
@@ -1295,7 +1281,7 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-36-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-35-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
 </figure>
 </div>
 </div>
@@ -1310,7 +1296,7 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-37-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-36-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
 </figure>
 </div>
 </div>
@@ -1333,11 +1319,6 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <!-- $$P(Y \mid \text{do}(X = x)) = \sum_{z} P(Y \mid X = x, Z = z) P(Z = z)$$ -->
 <!-- -   This provides a formal way to prove that we can estimate the causal effect either by ***intervening*** **on** $X$, using a randomized control trial, or by ***measuring the confounder*** $Z$ and adjusting (controlling) for it. -->
 <!-- ::: -->
-</section></section>
-<section>
-<section id="activity" class="title-slide slide level1 inverse center" data-background-color="#EB641E">
-<h1>Activity</h1>
-
 </section>
 <section id="activity-build-your-own-dag" class="slide level2">
 <h2>📝 Activity: Build Your Own DAG</h2>
@@ -1359,8 +1340,8 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <li>We’ll project submissions and <strong>discuss</strong>:
 <ul>
 <li>What assumptions are implied?</li>
-<li>What <strong>adjustment set</strong> identifies the effect?</li>
-<li>Is the effect <strong>identifiable</strong>?</li>
+<li>What adjustment set identifies the effect?</li>
+<li>Is the effect identifiable?</li>
 </ul></li>
 </ul>
 </div>
@@ -1372,11 +1353,6 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 </div>
 </div></div>
 </div>
-</section></section>
-<section>
-<section id="section-9" class="title-slide slide level1 inverse center" data-background-color="#EB641E">
-<h1></h1>
-
 </section>
 <section id="reasons-why-dags-are-useful" class="slide level2">
 <h2>Reasons why DAGs are useful</h2>
@@ -1428,13 +1404,8 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <li class="fragment"><p>DAGs are “the simplest possible” model; they clarify assumptions but cannot replace fully mechanistic, dynamic models.</p></li>
 <li class="fragment"><p>Acyclic graphs can’t capture feedback or highly interconnected systems (e.g., the brain, the economy). Such systems systems exhibit complexity (e.g.&nbsp;sensitivity dependence on initial conditions) that DAGs cannot capture.</p></li>
 </ul>
-</section></section>
-<section>
-<section id="references" class="title-slide slide level1 inverse center" data-background-color="#EB641E">
-<h1>References</h1>
-
 </section>
-<section id="references-1" class="slide level2">
+<section id="references" class="slide level2">
 <h2>References</h2>
 <div class="columns">
 <div class="column" style="width:70%;">
@@ -1465,7 +1436,7 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <p>CBCD Causal Inference Workshop</p>
 </div>
 </div>
-</section></section>
+</section>
 
     </div>
   </div>
