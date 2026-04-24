@@ -1634,7 +1634,6 @@ $I$ is an **instrumental variable**, affects $X$, but only affects $Y$ via $X$ a
  
 
 -   In practice, this is often done with a *"two-step" regression*
-
     -   *Step 1*: $X \sim I + Z$
     -   *Step 2*: $Y \sim \hat X + Z$
 
