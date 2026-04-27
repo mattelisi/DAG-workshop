@@ -407,11 +407,15 @@ Matteo Lisi
 <h2>Outline</h2>
 <div>
 <ol type="1">
-<li><p>DAGs (Directed Acyclic Graphs)</p></li>
+<li><p>DAGs (Directed Acyclic Graphs) as nonparametric causal models</p></li>
 <li><p>Testable implications</p></li>
 <li><p>Estimating causal effects</p></li>
 <li><p>‘Draw your DAG’ exercise</p></li>
 </ol>
+</div>
+<p>&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;</p>
+<div style="font-size: 60%;">
+<p>Link: <a href="https://mlisi.xyz/DAG-workshop/">mlisi.xyz/DAG-workshop/</a></p>
 </div>
 </section>
 <section id="correlation-does-not-imply-causation" class="slide level2">
@@ -965,16 +969,21 @@ When we have latent variables the output is not a unique DAG, but a a set of gra
 </ul></li>
 </ul>
 <p>&nbsp;</p>
+<!-- -   We define, in principle, two *potential outcomes* for each child: the outcome if they receive the intervention ($Y_i^{X=1}$) and the outcome if they do not ($Y_i^{X=0}$). The causal effect for that child is their difference: $$\text{causal effect for }i^{\text{th}}\text{ child} = Y_i^{X=1} - Y_i^{X=0}$$. -->
 <ul>
-<li class="fragment">We define, in principle, two <em>potential outcomes</em> for each child: the outcome if they receive the intervention (<span class="math inline">\(Y_i^{X=1}\)</span>) and the outcome if they do not (<span class="math inline">\(Y_i^{X=0}\)</span>). The causal effect for that child is their difference: <span class="math display">\[\text{causal effect for }i^{\text{th}}\text{ child} = Y_i^{X=1} - Y_i^{X=0}\]</span>.</li>
+<li class="fragment"><p>For each child, we can define two <em>potential outcomes</em>: one if the child receives the intervention, <span class="math inline">\(Y_i^{X=1}\)</span>, and one if the child does not, <span class="math inline">\(Y_i^{X=0}\)</span>.</p></li>
+<li class="fragment"><p>The individual causal effect is the difference between these two outcomes: <span class="math display">\[\text{causal effect for child } i = Y_i^{X=1} - Y_i^{X=0}\]</span></p></li>
 </ul>
 </section>
-<section id="the-fundamental-problem-of-causal-inference" class="slide level2">
+<section id="the-fundamental-problem-of-causal-inference" class="slide level2" data-background-color="#202A30">
 <h2>The fundamental problem of causal inference</h2>
 <ul>
-<li class="fragment"><p>We can only ever observe one outcome — either the child received the treatment or not.<br>
-The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservable</em>.</p></li>
-<li class="fragment"><p>The problem is <em>fundamental</em> in the sense that it can never be solved empirically alone; we always need <strong>assumptions</strong>.</p></li>
+<li class="fragment"><p>For each child, we observe only one potential outcome: either the child received the treatment or not.<br>
+The other, <em>counterfactual</em>, outcome is fundamentally <em>unobservable</em>.</p></li>
+<li class="fragment"><p>The problem is <em>fundamental</em> because it can never be solved from data alone; we need <strong>assumptions</strong>.</p></li>
+</ul>
+<p>&nbsp; &nbsp;</p>
+<ul>
 <li class="fragment"><p>A DAG can encode these assumptions and provides a sketch of the data-generating process.</p></li>
 <li class="fragment"><p>We can use the DAG for:</p>
 <ul>
@@ -1019,10 +1028,10 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <!-- dag <- dagify(Y ~ Z, -->
 <!--               Y ~ X, -->
 <!--               coords = coord_dag) -->
-<!-- ggdag(dag, node=FALSE, text_col = "black", text_size = 8) +  -->
+<!-- ggdag(dag, node=FALSE, text_col = "black", text_size = 8) + -->
 <!--   theme_dag()+ -->
 <!--   geom_dag_edges(aes(edge_colour = ifelse(name == "X" & to == "Y", "blue", "black"), -->
-<!--                      edge_width = ifelse(name == "X" & to == "Y", 1.2, 0.5)))  -->
+<!--                      edge_width = ifelse(name == "X" & to == "Y", 1.2, 0.5))) -->
 <!-- ``` -->
 <!-- ::::: {style="font-size: 80%;"} -->
 <!-- -   The **estimand** is the target causal quantity, not just a regression coefficient. (e.g. the average causal effect in a population). -->
@@ -1038,7 +1047,8 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <!-- ::: fragment -->
 <!-- To generalize to the population (population ATE), we may need extra steps (e.g. post-stratification if distribution of covariates $Z$ in the sample differs from population). -->
 <!-- <!-- The distribution of covariates $Z$ may be different in the _target population_, in which case we may need some additional steps (e.g. post-stratification) to obtain a true _population average treatment effect_ (PATE or simply ATE) $$\text{ATE} = \mathbb{E}\left[Y^{X=1} -Y^{X=0}\right]$$ -->
-<p>–&gt; <!-- ::: --> <!-- ::::: --></p>
+<!-- ::: -->
+<!-- ::::: -->
 </section>
 <section id="causal-effects-confounding" class="slide level2">
 <h2>Causal effects &amp; confounding</h2>
@@ -1063,8 +1073,8 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 </div>
 </div></div>
 <ul>
-<li class="fragment"><p>Confounding occurs when there are “spurious” paths transmitting <em>non-causal</em> associations, between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>.</p></li>
-<li class="fragment"><p>Non-causal paths connect <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span> but have an arrow that enters <span class="math inline">\(X\)</span>. They are <em>non-causal</em> because changing <span class="math inline">\(X\)</span> will not cause a change in <span class="math inline">\(Y\)</span> (at least not through this path).</p></li>
+<li class="fragment"><p><strong>Confounding</strong> occurs when <em>non-causal</em> paths create associations between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>.</p></li>
+<li class="fragment"><p>A non-causal path is any path connecting <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> that includes an arrow pointing into <span class="math inline">\(X\)</span>. (It is non-causal because changing <span class="math inline">\(X\)</span> does not affect <span class="math inline">\(Y\)</span> through that path.)</p></li>
 </ul>
 <p>&nbsp;</p>
 <div class="fragment">
@@ -1137,28 +1147,46 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <li class="fragment"><p>The <u>adjustment formula</u> implied by the DAG expresses the causal effect in terms of observable quantities: <span class="math display">\[\text{ATE} = \sum_z \left( \mathbb{E}\left[Y^{X=1}\mid Z=z\right] -  \mathbb{E}\left[Y^{X=0}\mid Z=z\right] \right) P(Z=z)\]</span></p></li>
 <li class="fragment"><p>In words: <em>compare treated and untreated units within each level of</em> <span class="math inline">\(Z\)</span>, then average these differences across the distribution of <span class="math inline">\(Z\)</span>.</p></li>
 </ul>
+<!-- ## Dealing with confounding (II): adjustment -->
+<!-- -   More generally, to estimate a variable’s causal effect we need to **block all non-causal paths** -->
+<!-- -   Including the confounder as covariate in a regression model is one way to control for it (caveats apply e.g. if the confounder is continuous) -->
+<!-- -   Often we may have *unmeasured confounders* that, although represented in the DAG, may be inaccessible for measurement. -->
+<!-- -   We need to find an alternative set of variable to adjust for. -->
+<!-- ## The 'backdoor' criterion -->
+<!-- 1.  List all of the paths connecting $X$ (cause) to $Y$ (outcome). -->
+<!-- 2.  Check if each path is open or closed.\ -->
+<!--     *A path is open unless it contains a collider!* -->
+<!-- 3.  Identify *backdoor paths* (those with an arrow entering $X$) -->
+<!-- 4.  Close any open backdoor path by selecting appropriate variables and conditioning on them. -->
+<!-- ::: fragment -->
+<!--   -->
+<!-- [**If some backdoor paths cannot be closed, then the causal effect is not identifiable from the available data**]{.underline} -->
+<!-- ::: -->
 </section>
 <section id="dealing-with-confounding-ii-adjustment-1" class="slide level2">
 <h2>Dealing with confounding (II): adjustment</h2>
 <ul>
-<li class="fragment"><p>More generally, to estimate a variable’s causal effect we need to <strong>block all non-causal paths</strong></p></li>
-<li class="fragment"><p>Including the confounder as covariate in a regression model is one way to control for it (caveats apply e.g.&nbsp;if the confounder is continuous)</p></li>
-<li class="fragment"><p>Often we may have <em>unmeasured confounders</em> that, although represented in the DAG, may be inaccessible for measurement.</p></li>
-<li class="fragment"><p>We need to find an alternative set of variable to adjust for.</p></li>
+<li class="fragment"><p>More generally, to estimate the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>, we need to <strong>block all non-causal paths</strong> between them.</p></li>
+<li class="fragment"><p>In DAG terms, this means finding a set of variables that <strong>d-separates</strong> <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> along the backdoor paths, without blocking the causal path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>.</p></li>
+<li class="fragment"><p>Matching and covariate adjustment are two ways of conditioning on variables to block non-causal paths.</p></li>
+</ul>
+<p>&nbsp;</p>
+<ul>
+<li class="fragment"><p>In practice, some confounders may be <em>unmeasured</em>, even if they are represented in the DAG.</p></li>
+<li class="fragment"><p>In that case, we need to look for an alternative set of variables that can still block the backdoor paths.</p></li>
 </ul>
 </section>
 <section id="the-backdoor-criterion" class="slide level2">
-<h2>The ‘backdoor’ criterion</h2>
+<h2>The backdoor criterion</h2>
 <ol type="1">
-<li class="fragment"><p>List all of the paths connecting <span class="math inline">\(X\)</span> (cause) to <span class="math inline">\(Y\)</span> (outcome).</p></li>
-<li class="fragment"><p>Check if each path is open or closed.<br>
-<em>A path is open unless it contains a collider!</em></p></li>
-<li class="fragment"><p>Identify <em>backdoor paths</em> (those with an arrow entering <span class="math inline">\(X\)</span>)</p></li>
-<li class="fragment"><p>Close any open backdoor path by selecting appropriate variables and conditioning on them.</p></li>
+<li class="fragment"><p>List all paths connecting <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>.</p></li>
+<li class="fragment"><p>Focus on the <strong>backdoor paths</strong>: paths that begin with an arrow into <span class="math inline">\(X\)</span>.</p></li>
+<li class="fragment"><p>Use the rules of <strong>d-separation</strong> to determine which of these paths are open.</p></li>
+<li class="fragment"><p>Condition on variables that close all open backdoor paths, while leaving the causal path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span> unblocked.</p></li>
 </ol>
 <div class="fragment">
 <p>&nbsp;</p>
-<p><u><strong>If some backdoor paths cannot be closed, then the causal effect is not identifiable from the available data</strong></u></p>
+<p><u><strong>If no such set exists, the causal effect is not identifiable from the available data</strong></u></p>
 </div>
 </section>
 <section id="the-backdoor-criterion-example" class="slide level2">
@@ -1250,7 +1278,7 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 </ul>
 <p>&nbsp;</p>
 <ul>
-<li class="fragment">In practice, this is often done with a <em>“two-step” regression</em>
+<li class="fragment">In practice, this often involves a <em>“two-step” regression</em>
 <ul>
 <li class="fragment"><em>Step 1</em>: <span class="math inline">\(X \sim I + Z\)</span></li>
 <li class="fragment"><em>Step 2</em>: <span class="math inline">\(Y \sim \hat X + Z\)</span></li>
@@ -1307,6 +1335,23 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <p>What if the observed confounder <span class="math inline">\(Z\)</span> also influences the instrumental variable?</p>
 </div>
 </div></div>
+<p>&nbsp; &nbsp;</p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagify</span>(X <span class="sc">~</span> Z,   Y <span class="sc">~</span> Z,   Y <span class="sc">~</span> U,</span>
+<span id="cb9-2"><a href="" aria-hidden="true" tabindex="-1"></a>              X <span class="sc">~</span> U,   Y <span class="sc">~</span> X,   X <span class="sc">~</span> I, </span>
+<span id="cb9-3"><a href="" aria-hidden="true" tabindex="-1"></a>              I <span class="sc">~</span> Z,</span>
+<span id="cb9-4"><a href="" aria-hidden="true" tabindex="-1"></a>              <span class="at">latent =</span> <span class="st">"U"</span>)</span>
+<span id="cb9-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">instrumentalVariables</span>(dag, <span class="at">exposure=</span><span class="st">"X"</span>, <span class="at">outcome=</span><span class="st">"Y"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> I |  Z</code></pre>
+</div>
+</div>
+<div style="font-size: 60%;">
+<p><em>Conditional instrumental variable:</em> <span class="math inline">\(I\)</span> is valid as instrumental variable only if we condition on <span class="math inline">\(Z\)</span></p>
+</div>
+</div>
 <!-- ## The *do*-operator -->
 <!-- Pearl (1995) introduced a new operator to explicitly represents intervention on a variable -->
 <!-- -   The ***do*****-operator** ($\text{do}(X = x)$) represents setting $X$ to a specific value $x$. -->
@@ -1328,28 +1373,30 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <div class="column" style="width:70%;">
 <div style="font-size: 80%;">
 <ul>
-<li>In small groups, <strong>sketch a DAG</strong> for a study you’ve done (or want to do).</li>
-<li><strong>Highlight one causal effect</strong> of interest (mark the (X Y) arrow).</li>
-<li><strong>Share your DAG</strong>:
+<li><p>Working individually or in small groups, <strong>draw a DAG</strong> for a study you have done, or would like to do.</p></li>
+<li><p><strong>Mark one causal effect of interest</strong> with an arrow (X Y).</p></li>
+<li><p><strong>Upload your DAG</strong>:</p>
 <ul>
-<li>Export from <strong>dagitty.net</strong> and email/upload, or</li>
-<li>Draw on paper, take a photo, and send it.</li>
+<li>export it from <strong>dagitty.net</strong>, or</li>
+<li>draw it on paper, take a photo, and upload the image.</li>
 </ul></li>
 </ul>
-<p><a href="https://www.dropbox.com/request/Po0sjCZMkyh84PncEXXF">Link for uploading</a></p>
+<!-- [Link for uploading](https://www.dropbox.com/request/Po0sjCZMkyh84PncEXXF) -->
+<p><a href="https://padlet.com/matteolisi3/dag-exercise-upload-your-dag-image-6j9elh4j3h9wn0gm">Upload here or scan the QR code</a></p>
 <ul>
-<li>We’ll project submissions and <strong>discuss</strong>:
+<li>We will look at some submissions together and discuss:
 <ul>
-<li>What assumptions are implied?</li>
-<li>What adjustment set identifies the effect?</li>
-<li>Is the effect identifiable?</li>
+<li>What assumptions does the DAG imply?</li>
+<li>Which variables, if any, should we adjust for?</li>
+<li>Is the causal effect identifiable?</li>
 </ul></li>
 </ul>
 </div>
 </div><div class="column" style="width:30%;">
+<!-- ![](img/adobe-express-qr-code.png){fig-align="center"} -->
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="img/adobe-express-qr-code.png" class="quarto-figure quarto-figure-center"></p>
+<p><img data-src="img/padlet-code.png" class="quarto-figure quarto-figure-center"></p>
 </figure>
 </div>
 </div></div>
@@ -1358,10 +1405,10 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <section id="reasons-why-dags-are-useful" class="slide level2">
 <h2>Reasons why DAGs are useful</h2>
 <ul>
-<li class="fragment"><p>DAGs help us reason <u>explicitly</u> about causal pathways among variables of interest.</p></li>
-<li class="fragment"><p>By expressing our theory as a DAG, we can use D-separation to derive and test its implications.</p></li>
+<li class="fragment"><p>DAGs help us think <u>explicitly</u> about causal pathways among variables of interest.</p></li>
+<li class="fragment"><p>By expressing our theory as a DAG, we can use <em>D-separation</em> to derive and test its implications.</p></li>
 <li class="fragment"><p>Drawing a DAG and checking for backdoor paths provides a principled way to decide which variables to adjust for when estimating causal effects.</p></li>
-<li class="fragment"><p>Graphical causal models offer a rigorous, transparent method for stating and scrutinizing causal assumptions.</p></li>
+<li class="fragment"><p>More broadly, graphical causal models provide a rigorous and transparent way to state and scrutinise causal assumptions.</p></li>
 </ul>
 <aside class="notes">
 <p>DAGs and causal reasoning should probably be introduced as part of undergraduate teaching of statistics; they are a useful tool for critical thinking and equips students to evaluate data-based claims with clarity.</p>
@@ -1380,10 +1427,10 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <section id="causal-inference-is-hard" class="slide level2">
 <h2>Causal inference is hard</h2>
 <ul>
-<li class="fragment"><p>Attempting to draw plausible a DAG can be a highly uncomfortable experience, as it fully exposes our uncertainty about our object of study.</p></li>
+<li class="fragment"><p>Attempting to draw plausible a DAG can be a highly uncomfortable experience, as it forces us to confront how uncertain we are about the system we are studying.</p></li>
 <li class="fragment"><p><u>DAGs make our assumptions transparent and easier to critique.</u></p></li>
-<li class="fragment"><p>Unless we are able to intervene (RCT) a single study rarely offers conclusive evidence.</p></li>
-<li class="fragment"><p>Establishing a convincing causal DAG requires broad, convergent evidence from multiple design and studies to constrain the plausible causal mechanisms.</p></li>
+<li class="fragment"><p>Unless we can intervene directly (e.g.&nbsp;in an RCT), a single study rarely provides conclusive evidence about causality.</p></li>
+<li class="fragment"><p>Building a convincing causal DAG usually requires broad, converging evidence from multiple studies and designs.</p></li>
 </ul>
 <aside class="notes">
 <p>Plausibility: for example, parachute use during free fall reduces mortality, we don’t need an RCT for that.</p>
@@ -1402,8 +1449,9 @@ The other (<em>counterfactual</em>) outcome remain fundamentally <em>unobservabl
 <section id="limitations-of-dags" class="slide level2">
 <h2>Limitations of DAGs</h2>
 <ul>
-<li class="fragment"><p>DAGs are “the simplest possible” model; they clarify assumptions but cannot replace fully mechanistic, dynamic models.</p></li>
-<li class="fragment"><p>Acyclic graphs can’t capture feedback or highly interconnected systems (e.g., the brain, the economy). Such systems systems exhibit complexity (e.g.&nbsp;sensitivity dependence on initial conditions) that DAGs cannot capture.</p></li>
+<li class="fragment"><p>DAGs are deliberately simple models: they clarify assumptions, but they cannot replace fully mechanistic or dynamic models.</p></li>
+<li class="fragment"><p>Acyclic graphs cannot fully represent systems with feedback loops (e.g.&nbsp;the brain or the economy).</p></li>
+<li class="fragment"><p>Such systems may exhibit forms of complexity, such as sensitivity to initial conditions, that DAGs are not designed to capture.</p></li>
 </ul>
 </section>
 <section id="references" class="slide level2">

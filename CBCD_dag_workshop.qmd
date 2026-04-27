@@ -25,7 +25,7 @@ library(dagitty)
 ## Outline
 
 ::: nonincremental
-1.  DAGs (Directed Acyclic Graphs)
+1.  DAGs (Directed Acyclic Graphs) as nonparametric causal models
 
 2.  Testable implications
 
@@ -33,6 +33,19 @@ library(dagitty)
 
 4.  'Draw your DAG' exercise
 :::
+
+
+ 
+  
+  
+  
+  
+
+:::: {style="font-size: 60%;"}
+
+Link: [mlisi.xyz/DAG-workshop/](https://mlisi.xyz/DAG-workshop/)
+
+::::
 
 
 ## *Correlation does not imply causation*
@@ -1154,14 +1167,22 @@ When we have latent variables the output is not a unique DAG, but a a set of gra
 
  
 
--   We define, in principle, two *potential outcomes* for each child: the outcome if they receive the intervention ($Y_i^{X=1}$) and the outcome if they do not ($Y_i^{X=0}$). The causal effect for that child is their difference: $$\text{causal effect for }i^{\text{th}}\text{ child} = Y_i^{X=1} - Y_i^{X=0}$$.
+<!-- -   We define, in principle, two *potential outcomes* for each child: the outcome if they receive the intervention ($Y_i^{X=1}$) and the outcome if they do not ($Y_i^{X=0}$). The causal effect for that child is their difference: $$\text{causal effect for }i^{\text{th}}\text{ child} = Y_i^{X=1} - Y_i^{X=0}$$. -->
 
-## The fundamental problem of causal inference
+- For each child, we can define two *potential outcomes*: one if the child receives the intervention, $Y_i^{X=1}$, and one if the child does not, $Y_i^{X=0}$.
 
--   We can only ever observe one outcome --- either the child received the treatment or not.\
-    The other (*counterfactual*) outcome remain fundamentally *unobservable*.
+- The individual causal effect is the difference between these two outcomes: $$\text{causal effect for child } i = Y_i^{X=1} - Y_i^{X=0}$$
 
--   The problem is *fundamental* in the sense that it can never be solved empirically alone; we always need **assumptions**.
+
+## The fundamental problem of causal inference {background-color="#202A30"}
+
+-   For each child, we observe only one potential outcome: either the child received the treatment or not.\
+    The other, *counterfactual*, outcome is fundamentally *unobservable*.
+
+-   The problem is *fundamental* because it can never be solved from data alone; we need **assumptions**.
+
+  
+ 
 
 -   A DAG can encode these assumptions and provides a sketch of the data-generating process.
 
@@ -1186,8 +1207,13 @@ dag <- dagify(Y ~ Z,
               Y ~ X,
               coords = coord_dag)
 
-ggdag(dag, node=FALSE, text_col = "black", text_size = 8) + 
-  theme_dag()
+# ggdag(dag, node=FALSE, text_col = "black", text_size = 8) + 
+#   theme_dag()
+
+ggdag(dag, node=FALSE, text_col = "black", text_size = 8) +
+  theme_dag()+
+  geom_dag_edges(aes(edge_colour = ifelse(name == "X" & to == "Y", "blue", "black"),
+                     edge_width = ifelse(name == "X" & to == "Y", 1.2, 0.5)))
 
 ```
 
@@ -1222,10 +1248,10 @@ $X \in \{0,1\}$ is the treatment (participation in the program); $Y$ is the outc
 <!--               Y ~ X, -->
 <!--               coords = coord_dag) -->
 
-<!-- ggdag(dag, node=FALSE, text_col = "black", text_size = 8) +  -->
+<!-- ggdag(dag, node=FALSE, text_col = "black", text_size = 8) + -->
 <!--   theme_dag()+ -->
 <!--   geom_dag_edges(aes(edge_colour = ifelse(name == "X" & to == "Y", "blue", "black"), -->
-<!--                      edge_width = ifelse(name == "X" & to == "Y", 1.2, 0.5)))  -->
+<!--                      edge_width = ifelse(name == "X" & to == "Y", 1.2, 0.5))) -->
 
 <!-- ``` -->
 
@@ -1250,7 +1276,7 @@ $X \in \{0,1\}$ is the treatment (participation in the program); $Y$ is the outc
 <!-- ::: fragment -->
 <!-- To generalize to the population (population ATE), we may need extra steps (e.g. post-stratification if distribution of covariates $Z$ in the sample differs from population). -->
 
-<!-- <!-- The distribution of covariates $Z$ may be different in the _target population_, in which case we may need some additional steps (e.g. post-stratification) to obtain a true _population average treatment effect_ (PATE or simply ATE) $$\text{ATE} = \mathbb{E}\left[Y^{X=1} -Y^{X=0}\right]$$ --> -->
+<!-- <!-- The distribution of covariates $Z$ may be different in the _target population_, in which case we may need some additional steps (e.g. post-stratification) to obtain a true _population average treatment effect_ (PATE or simply ATE) $$\text{ATE} = \mathbb{E}\left[Y^{X=1} -Y^{X=0}\right]$$ -->
 <!-- ::: -->
 <!-- ::::: -->
 
@@ -1291,9 +1317,9 @@ $Z$ represents other variables (e.g. SES, parental stress) that may influence bo
 ::::
 ::::::
 
--   Confounding occurs when there are "spurious" paths transmitting *non-causal* associations, between $X$ and $Y$.
+-   **Confounding** occurs when _non-causal_ paths create associations between $X$ and $Y$.
 
--   Non-causal paths connect $X$ to $Y$ but have an arrow that enters $X$. They are *non-causal* because changing $X$ will not cause a change in $Y$ (at least not through this path).
+-   A non-causal path is any path connecting $X$ and $Y$ that includes an arrow pointing into $X$. (It is non-causal because changing $X$ does not affect $Y$ through that path.)
 
  
 
@@ -1404,34 +1430,71 @@ ggdag(dag, node=FALSE, text_col = "black", text_size = 8) +
 
 -   The [adjustment formula]{.underline} implied by the DAG expresses the causal effect in terms of observable quantities: $$\text{ATE} = \sum_z \left( \mathbb{E}\left[Y^{X=1}\mid Z=z\right] -  \mathbb{E}\left[Y^{X=0}\mid Z=z\right] \right) P(Z=z)$$
 
+
+
 -   In words: *compare treated and untreated units within each level of* $Z$, then average these differences across the distribution of $Z$.
+
+
+<!-- ## Dealing with confounding (II): adjustment -->
+
+<!-- -   More generally, to estimate a variable’s causal effect we need to **block all non-causal paths** -->
+
+<!-- -   Including the confounder as covariate in a regression model is one way to control for it (caveats apply e.g. if the confounder is continuous) -->
+
+<!-- -   Often we may have *unmeasured confounders* that, although represented in the DAG, may be inaccessible for measurement. -->
+
+<!-- -   We need to find an alternative set of variable to adjust for. -->
+
+<!-- ## The 'backdoor' criterion -->
+
+<!-- 1.  List all of the paths connecting $X$ (cause) to $Y$ (outcome). -->
+
+<!-- 2.  Check if each path is open or closed.\ -->
+<!--     *A path is open unless it contains a collider!* -->
+
+<!-- 3.  Identify *backdoor paths* (those with an arrow entering $X$) -->
+
+<!-- 4.  Close any open backdoor path by selecting appropriate variables and conditioning on them. -->
+
+<!-- ::: fragment -->
+<!--   -->
+
+<!-- [**If some backdoor paths cannot be closed, then the causal effect is not identifiable from the available data**]{.underline} -->
+<!-- ::: -->
+
+
 
 ## Dealing with confounding (II): adjustment
 
--   More generally, to estimate a variable’s causal effect we need to **block all non-causal paths**
+- More generally, to estimate the causal effect of $X$ on $Y$, we need to **block all non-causal paths** between them.
 
--   Including the confounder as covariate in a regression model is one way to control for it (caveats apply e.g. if the confounder is continuous)
+- In DAG terms, this means finding a set of variables that **d-separates** $X$ and $Y$ along the backdoor paths, without blocking the causal path from $X$ to $Y$.
 
--   Often we may have *unmeasured confounders* that, although represented in the DAG, may be inaccessible for measurement.
+- Matching and covariate adjustment are two ways of conditioning on variables to block non-causal paths.
 
--   We need to find an alternative set of variable to adjust for.
+ 
+ 
+- In practice, some confounders may be *unmeasured*, even if they are represented in the DAG.
 
-## The 'backdoor' criterion
+- In that case, we need to look for an alternative set of variables that can still block the backdoor paths.
 
-1.  List all of the paths connecting $X$ (cause) to $Y$ (outcome).
 
-2.  Check if each path is open or closed.\
-    *A path is open unless it contains a collider!*
+## The backdoor criterion
 
-3.  Identify *backdoor paths* (those with an arrow entering $X$)
+1. List all paths connecting $X$ and $Y$.
 
-4.  Close any open backdoor path by selecting appropriate variables and conditioning on them.
+2. Focus on the **backdoor paths**: paths that begin with an arrow into $X$.
+
+3. Use the rules of **d-separation** to determine which of these paths are open.
+
+4. Condition on variables that close all open backdoor paths, while leaving the causal path from $X$ to $Y$ unblocked.
 
 ::: fragment
- 
+&nbsp;
 
-[**If some backdoor paths cannot be closed, then the causal effect is not identifiable from the available data**]{.underline}
+[**If no such set exists, the causal effect is not identifiable from the available data**]{.underline}
 :::
+
 
 ## The 'backdoor' criterion: example
 
@@ -1633,7 +1696,7 @@ $I$ is an **instrumental variable**, affects $X$, but only affects $Y$ via $X$ a
 
  
 
--   In practice, this is often done with a *"two-step" regression*
+-   In practice, this often involves a *"two-step" regression*
     -   *Step 1*: $X \sim I + Z$
     -   *Step 2*: $Y \sim \hat X + Z$
 
@@ -1835,6 +1898,30 @@ What if the observed confounder $Z$ also influences the instrumental variable?
 ::::
 ::::::
 
+ 
+ 
+
+::::: fragment
+
+```{r, echo=TRUE}
+dag <- dagify(X ~ Z,   Y ~ Z,   Y ~ U,
+              X ~ U,   Y ~ X,   X ~ I, 
+              I ~ Z,
+              latent = "U")
+
+instrumentalVariables(dag, exposure="X", outcome="Y" )
+```
+::: {style="font-size: 60%;"}
+
+_Conditional instrumental variable:_ $I$ is valid as instrumental variable only if we condition on $Z$
+
+:::
+
+:::::
+
+
+
+
 <!-- ## The *do*-operator -->
 
 <!-- Pearl (1995) introduced a new operator to explicitly represents intervention on a variable -->
@@ -1874,18 +1961,22 @@ What if the observed confounder $Z$ also influences the instrumental variable?
 
 :::: {style="font-size: 80%;"}
 
-- In small groups, **sketch a DAG** for a study you’ve done (or want to do).
-- **Highlight one causal effect** of interest (mark the \(X \rightarrow Y\) arrow).
-- **Share your DAG**:
-  - Export from **dagitty.net** and email/upload, or
-  - Draw on paper, take a photo, and send it.
+- Working individually or in small groups, **draw a DAG** for a study you have done, or would like to do.
 
-[Link for uploading](https://www.dropbox.com/request/Po0sjCZMkyh84PncEXXF)
+- **Mark one causal effect of interest** with an arrow \(X \rightarrow Y\).
 
-- We’ll project submissions and **discuss**:
-  - What assumptions are implied?
-  - What adjustment set identifies the effect?
-  - Is the effect identifiable?
+- **Upload your DAG**:
+  - export it from **dagitty.net**, or
+  - draw it on paper, take a photo, and upload the image.
+
+<!-- [Link for uploading](https://www.dropbox.com/request/Po0sjCZMkyh84PncEXXF) -->
+
+[Upload here or scan the QR code](https://padlet.com/matteolisi3/dag-exercise-upload-your-dag-image-6j9elh4j3h9wn0gm)
+
+- We will look at some submissions together and discuss:
+  - What assumptions does the DAG imply?
+  - Which variables, if any, should we adjust for?
+  - Is the causal effect identifiable?
 
 ::::
 
@@ -1893,7 +1984,9 @@ What if the observed confounder $Z$ also influences the instrumental variable?
 
 ::: {.column width="30%"}
 
-![](img/adobe-express-qr-code.png){fig-align="center"}
+<!-- ![](img/adobe-express-qr-code.png){fig-align="center"} -->
+
+![](img/padlet-code.png){fig-align="center"}
 
 :::
 
@@ -1905,37 +1998,44 @@ What if the observed confounder $Z$ also influences the instrumental variable?
 
 ## Reasons why DAGs are useful
 
--   DAGs help us reason [explicitly]{.underline} about causal pathways among variables of interest.
+-   DAGs help us think [explicitly]{.underline} about causal pathways among variables of interest.
 
--   By expressing our theory as a DAG, we can use D-separation to derive and test its implications.
+-   By expressing our theory as a DAG, we can use *D-separation* to derive and test its implications.
 
 -   Drawing a DAG and checking for backdoor paths provides a principled way to decide which variables to adjust for when estimating causal effects.
 
--   Graphical causal models offer a rigorous, transparent method for stating and scrutinizing causal assumptions.
+-   More broadly, graphical causal models provide a rigorous and transparent way to state and scrutinise causal assumptions.
+
 
 ::: notes
 DAGs and causal reasoning should probably be introduced as part of undergraduate teaching of statistics; they are a useful tool for critical thinking and equips students to evaluate data-based claims with clarity.
 :::
 
+
+
 ## Causal inference is hard
 
--   Attempting to draw plausible a DAG can be a highly uncomfortable experience, as it fully exposes our uncertainty about our object of study.
+-   Attempting to draw plausible a DAG can be a highly uncomfortable experience, as it forces us to confront how uncertain we are about the system we are studying.
 
 -   [DAGs make our assumptions transparent and easier to critique.]{.underline}
 
--   Unless we are able to intervene (RCT) a single study rarely offers conclusive evidence.
+-   Unless we can intervene directly (e.g. in an RCT), a single study rarely provides conclusive evidence about causality.
 
--   Establishing a convincing causal DAG requires broad, convergent evidence from multiple design and studies to constrain the plausible causal mechanisms.
+-   Building a convincing causal DAG usually requires broad, converging evidence from multiple studies and designs.
 
 ::: notes
 Plausibility: for example, parachute use during free fall reduces mortality, we don't need an RCT for that.
 :::
 
+
+
 ## Limitations of DAGs
 
--   DAGs are “the simplest possible” model; they clarify assumptions but cannot replace fully mechanistic, dynamic models.
+- DAGs are deliberately simple models: they clarify assumptions, but they cannot replace fully mechanistic or dynamic models.
 
--   Acyclic graphs can’t capture feedback or highly interconnected systems (e.g., the brain, the economy). Such systems systems exhibit complexity (e.g. sensitivity dependence on initial conditions) that DAGs cannot capture.
+- Acyclic graphs cannot fully represent systems with feedback loops (e.g. the brain or the economy).
+
+- Such systems may exhibit forms of complexity, such as sensitivity to initial conditions, that DAGs are not designed to capture.
 
 
 ## References
