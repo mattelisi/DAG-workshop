@@ -23,17 +23,17 @@ filters: [bg_style.lua]
 
 
 
-<!-- ## Outline -->
+## Outline
 
-<!-- ::: nonincremental -->
-<!-- 1.  DAGs (Directed Acyclic Graphs) -->
+::: nonincremental
+1.  DAGs (Directed Acyclic Graphs)
 
-<!-- 2.  Testable implications of DAGs -->
+2.  Testable implications
 
-<!-- 3.  Estimating causal effects -->
+3.  Estimating causal effects
 
-<!-- 4.  Final thoughts & 'Draw your DAG' exercise -->
-<!-- ::: -->
+4.  'Draw your DAG' exercise
+:::
 
 
 ## *Correlation does not imply causation*
@@ -259,7 +259,7 @@ This holds regardless of the specific functional form associated with each arrow
 
 ## Conditional and unconditional independencies
 
-The structure of a DAG imposes constraints on the possible joint distribution of its variables, and these constraints can be tested empirically.
+The structure of a DAG imposes constraints on the possible joint distribution of its variables, which can be tested empirically.
 
 - **Unconditional (in)dependencies**: which variables should be associated, or not associated, with one another.
 
@@ -370,7 +370,7 @@ How can we condition on, or control for, a variable in practice?
 -   They become dependent after we condition on the collider node $C$;\
     ($A \not\!\perp\!\!\!\perp  B \mid C$)
 
-## Cake competition example {.nostretch}
+## Coliders: cake competition example {.nostretch}
 
 ::::::::: columns
 ::::::: {.column width="65%"}
