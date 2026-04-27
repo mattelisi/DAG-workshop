@@ -418,21 +418,104 @@ Matteo Lisi
 <p>Link: <a href="https://mlisi.xyz/DAG-workshop/">mlisi.xyz/DAG-workshop/</a></p>
 </div>
 </section>
-<section id="correlation-does-not-imply-causation" class="slide level2">
-<h2><em>Correlation does not imply causation</em></h2>
-
-<img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-2-1.png" class="margin-caption r-stretch quarto-figure-center" width="480"><p class="caption">Civil engineering doctorates awarded (in the US; source NSF) as a function of the per capita consumption of mozzarella cheese, measured from 2000 to 2009.</p></section>
-<section id="causality" class="slide level2">
-<h2>Causality</h2>
-<div>
+<section id="correlation-causation-and-dags" class="slide level2">
+<h2>Correlation, causation, and DAGs</h2>
+<p>&nbsp;</p>
+<div class="columns">
+<div class="column" style="width:45%;">
+<div style="font-size: 80%;">
 <ul>
-<li>Taboo against explicit causal language in observational studies.</li>
-<li>However, most research questions are ‘causal’.</li>
-<li>Papers tend include vague or implicit hints at causality, with disclaimers.</li>
-<li>Readers (especially non-specialists) often misled into causal conclusions when these are not warranted.</li>
-<li><strong>There is need for a principled framework for thinking clearly about causality.</strong></li>
+<li><p><em>Correlation is not causation</em></p></li>
+<li><p>Taboo against explicit causal language in observational studies.</p></li>
+<li><p>However, most research questions are ultimately <strong>causal</strong>.</p></li>
+<li><p>Papers often include vague or implicit hints at causality, while adding disclaimers.</p></li>
+<li><p>Readers, especially non-specialists, may still be led to causal conclusions that are not warranted.</p></li>
+<li><p><strong>There is need for a principled framework for thinking clearly about causality.</strong></p></li>
 </ul>
 </div>
+</div><div class="column" style="width:55%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-2-1.png" class="margin-caption quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+<!-- ## *Correlation does not imply causation* -->
+<!-- ```{r, echo=FALSE} -->
+<!-- #| fig-cap: "Civil engineering doctorates awarded (in the US; source NSF)  as a function of the per capita consumption of mozzarella cheese, measured from 2000 to 2009." -->
+<!-- #| fig-align: 'center' -->
+<!-- #| fig-cap-location: margin -->
+<!-- #| fig-width: 5 -->
+<!-- #| fig-height: 5 -->
+<!-- par(mar=c(5,4,1.5,1)+0.1) -->
+<!-- year <- c(2000,    2001,   2002,   2003,   2004,   2005,   2006,   2007,   2008,   2009) -->
+<!-- mozza <- c(9.3,    9.7,    9.7,    9.7,    9.9,    10.2,   10.5,   11, 10.6,   10.6) -->
+<!-- engPhd <- c(480,   501,    540,    552,    547,    622,    655,    701,    712,    708) -->
+<!-- d <- data.frame(year, mozza, engPhd) -->
+<!-- d$mozza_kg <- d$mozza * 0.453592 -->
+<!-- m0 <- lm(engPhd~mozza_kg,d) -->
+<!-- ## summary(m0) -->
+<!-- beta <- round(unname(coef(m0)),digits=2) -->
+<!-- corr_cheese <- cor.test(d$engPhd,d$mozza_kg) -->
+<!-- newx = seq(3,6,by = 0.1) -->
+<!-- conf_interval <- predict(m0, newdata=data.frame(mozza_kg=newx), interval="confidence",level = 0.975) -->
+<!-- par(pty="s") -->
+<!-- plot(d$mozza_kg, d$engPhd,cex=1.5,pch=21,lwd=2,col="blue", xlab="Per-capita consumption of mozzarella cheese [Kg/year]",ylab="Civil engineering PhD awarded [N/year]",xlim=c(8.9,11.2)* 0.453592,ylim=c(440,760)) -->
+<!-- abline(m0,lwd=3) -->
+<!-- lines(newx, conf_interval[,2], lty=2) -->
+<!-- lines(newx, conf_interval[,3], lty=2) -->
+<!-- text(4.7,450,bquote(italic(r)~"="~.(round(corr_cheese$estimate,digits=2))~"  "~italic(p)~"<.0001")) -->
+<!-- ``` -->
+<!-- ## Causality -->
+<!-- ::: nonincremental -->
+<!-- -   Taboo against explicit causal language in observational studies. -->
+<!-- -   However, most research questions are 'causal'. -->
+<!-- -   Papers tend include vague or implicit hints at causality, with disclaimers. -->
+<!-- -   Readers (especially non-specialists) often misled into causal conclusions when these are not warranted. -->
+<!-- -   **There is need for a principled framework for thinking clearly about causality.** -->
+<!-- ::: -->
+<!-- ##  -->
+<!-- ```{r} -->
+<!-- #| fig-height: 4 -->
+<!-- #| fig-width: 6 -->
+<!-- #| fig-align: center -->
+<!-- #| echo: FALSE -->
+<!-- coord_dag <- list(x = c(phds = 1, mozza = -1, third = 0)*1.5, -->
+<!--                   y = c(phds = -1, mozza = -1, third = 1)) -->
+<!-- dag <- dagify(mozza ~ third, -->
+<!--                phds ~ third, -->
+<!--                labels = c( -->
+<!--                  mozza = "mozzarella\nconsumption", -->
+<!--                  third = "third\nvariable(s)", -->
+<!--                  phds = "PhDs awarded"), -->
+<!--                coords = coord_dag) -->
+<!-- # adjustmentSets( dag , exposure="mozza" , outcome="phds" ) -->
+<!-- dag %>%  -->
+<!--   tidy_dagitty(layout = "nicely") %>%  -->
+<!--   ggplot(aes(x = x, y = y, xend = xend, yend = yend))+ -->
+<!--   geom_dag_point(colour = 'white', size = 40) + -->
+<!--   geom_dag_text(aes(label=label), colour = 'black',family="Corbel") + -->
+<!--   geom_dag_edges(start_cap = ggraph::circle(12, 'mm'), -->
+<!--                  end_cap = ggraph::circle(12, 'mm')) + -->
+<!--   theme_dag() + -->
+<!--   coord_equal(xlim=c(-2,2), -->
+<!--               ylim=c(-1,1)) -->
+<!-- ``` -->
 <!-- ## Causality in neroscience -->
 <!-- **Characterising the role of neurons for behavior is a causal inference question.** -->
 <!-- ![Jones & Kording (2019)](img/causal_neuro_mediation.png){.nostretch fig-align="center" width="70%"} -->
@@ -454,10 +537,6 @@ Matteo Lisi
 <!-- ::: -->
 <!-- [^1]: The symbol $\not\!\perp\!\!\!\perp$ means *"not independent of"*. Conversely $A \!\perp\!\!\!\perp  B$ means "$A$ and $B$ are independent". -->
 </section>
-<section id="section" class="slide level2">
-<h2></h2>
-
-<img data-src="CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
 <section id="directed-acyclic-graphs-dags" class="slide level2">
 <h2>Directed Acyclic Graphs (DAGs)</h2>
 <p>&nbsp;</p>
@@ -730,7 +809,7 @@ Matteo Lisi
 <li class="fragment"><p>Some examples are “fork” paths <span class="math inline">\(X \leftarrow Z \rightarrow Y\)</span> or a “pipe” paths <span class="math inline">\(X \rightarrow Z \rightarrow Y\)</span>. <strong>These paths are said to be “open” and in order to “close” them (so as to D-separate</strong> <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> and make them independent) we need to condition on <span class="math inline">\(Z\)</span>.</p></li>
 </ul>
 </section>
-<section id="section-1" class="slide level2 nostretch">
+<section id="section" class="slide level2 nostretch">
 <h2></h2>
 <h3 id="d-separation-example">D-separation: example</h3>
 <p>&nbsp; &nbsp;</p>
@@ -747,7 +826,7 @@ Matteo Lisi
 <p><span class="math inline">\(Z\)</span> and <span class="math inline">\(Y\)</span> are D-separated (unconditionally independent, <span class="math inline">\(Z \perp\!\!\!\perp  Y\)</span>)</p>
 </div>
 </section>
-<section id="section-2" class="slide level2 nostretch">
+<section id="section-1" class="slide level2 nostretch">
 <h2></h2>
 <h3 id="d-separation-example-1">D-separation: example</h3>
 <p>&nbsp; &nbsp;</p>
@@ -768,7 +847,7 @@ Matteo Lisi
 (If we were to make an intervention on <span class="math inline">\(Z\)</span> this would have no effect on <span class="math inline">\(Y\)</span>.)</p>
 </div>
 </section>
-<section id="section-3" class="slide level2 nostretch">
+<section id="section-2" class="slide level2 nostretch">
 <h2></h2>
 <h3 id="d-separation-example-2">D-separation: example</h3>
 <p>&nbsp; &nbsp;</p>
@@ -785,7 +864,7 @@ Matteo Lisi
 <p>&nbsp;</p>
 <p>(formally <span class="math inline">\(Z \not\!\perp\!\!\!\perp  Y \mid U\)</span>)</p>
 </section>
-<section id="section-4" class="slide level2 nostretch">
+<section id="section-3" class="slide level2 nostretch">
 <h2></h2>
 <h3 id="d-separation-example-2-1">D-separation: example 2</h3>
 <p>&nbsp;</p>
@@ -803,7 +882,7 @@ Matteo Lisi
 <p>Only <span class="math inline">\(Z_1\)</span> and <span class="math inline">\(Z_2\)</span> are unconditionally independent ( <span class="math inline">\(Z_1 \perp\!\!\!\perp  Z_2\)</span>).</p>
 </div>
 </section>
-<section id="section-5" class="slide level2 nostretch">
+<section id="section-4" class="slide level2 nostretch">
 <h2></h2>
 <h3 id="d-separation-example-2-2">D-separation: example 2</h3>
 <p>&nbsp;</p>
@@ -866,7 +945,7 @@ we should find that <span class="math inline">\(\beta_2 \approx 0\)</span>.</p><
 <li class="fragment"><p>More specifically, the DAG would be wrong because the ‘true’ model must have a path between <span class="math inline">\(W\)</span> and <span class="math inline">\(Z_1\)</span> that is not D-separated by <span class="math inline">\(X\)</span></p></li>
 </ul>
 </section>
-<section id="section-6" class="slide level2 nostretch">
+<section id="section-5" class="slide level2 nostretch">
 <h2></h2>
 <h3 id="d-separation-example-1-again">D-separation: example 1 again</h3>
 <p>&nbsp; &nbsp;</p>
@@ -887,7 +966,7 @@ we should find that <span class="math inline">\(\beta_2 \approx 0\)</span>.</p><
 <p><span class="math inline">\(Z \perp\!\!\!\perp  Y \mid \{ W,X \}\)</span></p>
 </div>
 </section>
-<section id="section-7" class="slide level2 nostretch">
+<section id="section-6" class="slide level2 nostretch">
 <h2></h2>
 <h3 id="d-separation">D-separation</h3>
 <p>&nbsp;</p>

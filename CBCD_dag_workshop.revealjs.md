@@ -48,28 +48,138 @@ Link: [mlisi.xyz/DAG-workshop/](https://mlisi.xyz/DAG-workshop/)
 
 ::::
 
+## Correlation, causation, and DAGs
 
-## *Correlation does not imply causation*
+
+ 
+
+::::: columns
+::: {.column width="45%"}
+
+:::: {.nonincremental style="font-size: 80%;"}
+
+- *Correlation is not causation*
+
+- Taboo against explicit causal language in observational studies.
+
+- However, most research questions are ultimately **causal**.
+
+- Papers often include vague or implicit hints at causality, while adding disclaimers.
+
+- Readers, especially non-specialists, may still be led to causal conclusions that are not warranted.
+
+- **There is need for a principled framework for thinking clearly about causality.**
+
+::::
+
+:::
+
+::: {.column width="55%"}
 
 
 
 ::: {.cell .fig-cap-location-margin layout-align="center"}
 ::: {.cell-output-display}
-![Civil engineering doctorates awarded (in the US; source NSF)	as a function of the per capita consumption of mozzarella cheese, measured from 2000 to 2009.](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-2-1.png){fig-align='center' width=480}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-2-1.png){fig-align='center' width=480}
 :::
 :::
 
 
 
-## Causality
+::: fragment
 
-::: nonincremental
--   Taboo against explicit causal language in observational studies.
--   However, most research questions are 'causal'.
--   Papers tend include vague or implicit hints at causality, with disclaimers.
--   Readers (especially non-specialists) often misled into causal conclusions when these are not warranted.
--   **There is need for a principled framework for thinking clearly about causality.**
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-3-1.png){fig-align='center' width=480}
 :::
+:::
+
+
+
+:::
+
+:::
+:::::
+
+<!-- ## *Correlation does not imply causation* -->
+
+<!-- ```{r, echo=FALSE} -->
+<!-- #| fig-cap: "Civil engineering doctorates awarded (in the US; source NSF)	as a function of the per capita consumption of mozzarella cheese, measured from 2000 to 2009." -->
+<!-- #| fig-align: 'center' -->
+<!-- #| fig-cap-location: margin -->
+<!-- #| fig-width: 5 -->
+<!-- #| fig-height: 5 -->
+
+<!-- par(mar=c(5,4,1.5,1)+0.1) -->
+
+<!-- year <- c(2000,	2001,	2002,	2003,	2004,	2005,	2006,	2007,	2008,	2009) -->
+<!-- mozza <- c(9.3,	9.7,	9.7,	9.7,	9.9,	10.2,	10.5,	11,	10.6,	10.6) -->
+<!-- engPhd <- c(480,	501,	540,	552,	547,	622,	655,	701,	712,	708) -->
+<!-- d <- data.frame(year, mozza, engPhd) -->
+<!-- d$mozza_kg <- d$mozza * 0.453592 -->
+
+<!-- m0 <- lm(engPhd~mozza_kg,d) -->
+<!-- ## summary(m0) -->
+<!-- beta <- round(unname(coef(m0)),digits=2) -->
+
+<!-- corr_cheese <- cor.test(d$engPhd,d$mozza_kg) -->
+
+<!-- newx = seq(3,6,by = 0.1) -->
+<!-- conf_interval <- predict(m0, newdata=data.frame(mozza_kg=newx), interval="confidence",level = 0.975) -->
+
+<!-- par(pty="s") -->
+<!-- plot(d$mozza_kg, d$engPhd,cex=1.5,pch=21,lwd=2,col="blue", xlab="Per-capita consumption of mozzarella cheese [Kg/year]",ylab="Civil engineering PhD awarded [N/year]",xlim=c(8.9,11.2)* 0.453592,ylim=c(440,760)) -->
+<!-- abline(m0,lwd=3) -->
+<!-- lines(newx, conf_interval[,2], lty=2) -->
+<!-- lines(newx, conf_interval[,3], lty=2) -->
+<!-- text(4.7,450,bquote(italic(r)~"="~.(round(corr_cheese$estimate,digits=2))~"  "~italic(p)~"<.0001")) -->
+<!-- ``` -->
+
+<!-- ## Causality -->
+
+<!-- ::: nonincremental -->
+<!-- -   Taboo against explicit causal language in observational studies. -->
+<!-- -   However, most research questions are 'causal'. -->
+<!-- -   Papers tend include vague or implicit hints at causality, with disclaimers. -->
+<!-- -   Readers (especially non-specialists) often misled into causal conclusions when these are not warranted. -->
+<!-- -   **There is need for a principled framework for thinking clearly about causality.** -->
+<!-- ::: -->
+
+<!-- ##  -->
+
+<!-- ```{r} -->
+<!-- #| fig-height: 4 -->
+<!-- #| fig-width: 6 -->
+<!-- #| fig-align: center -->
+<!-- #| echo: FALSE -->
+
+<!-- coord_dag <- list(x = c(phds = 1, mozza = -1, third = 0)*1.5, -->
+<!--                   y = c(phds = -1, mozza = -1, third = 1)) -->
+
+<!-- dag <- dagify(mozza ~ third, -->
+<!--                phds ~ third, -->
+<!--                labels = c( -->
+<!--                  mozza = "mozzarella\nconsumption", -->
+<!--                  third = "third\nvariable(s)", -->
+<!--                  phds = "PhDs awarded"), -->
+<!--                coords = coord_dag) -->
+
+<!-- # adjustmentSets( dag , exposure="mozza" , outcome="phds" ) -->
+
+<!-- dag %>%  -->
+<!--   tidy_dagitty(layout = "nicely") %>%  -->
+<!--   ggplot(aes(x = x, y = y, xend = xend, yend = yend))+ -->
+<!--   geom_dag_point(colour = 'white', size = 40) + -->
+<!--   geom_dag_text(aes(label=label), colour = 'black',family="Corbel") + -->
+<!--   geom_dag_edges(start_cap = ggraph::circle(12, 'mm'), -->
+<!--                  end_cap = ggraph::circle(12, 'mm')) + -->
+<!--   theme_dag() + -->
+<!--   coord_equal(xlim=c(-2,2), -->
+<!--               ylim=c(-1,1)) -->
+
+<!-- ``` -->
 
 <!-- ## Causality in neroscience -->
 
@@ -104,17 +214,6 @@ Link: [mlisi.xyz/DAG-workshop/](https://mlisi.xyz/DAG-workshop/)
 <!-- ::: -->
 
 <!-- [^1]: The symbol $\not\!\perp\!\!\!\perp$ means *"not independent of"*. Conversely $A \!\perp\!\!\!\perp  B$ means "$A$ and $B$ are independent". -->
-
-## 
-
-
-
-::: {.cell layout-align="center"}
-::: {.cell-output-display}
-![](CBCD_dag_workshop_files/figure-revealjs/unnamed-chunk-3-1.png){fig-align='center' width=576}
-:::
-:::
-
 
 
 ## Directed Acyclic Graphs (DAGs)
